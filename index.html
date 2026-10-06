@@ -9,88 +9,114 @@
   :root{
     --plane:#0d0d0d; --surface:#141922; --raised:#1b2230; --line:rgba(255,255,255,.10);
     --ink:#ffffff; --ink2:#c3c2b7; --muted:#898781;
-    --accent:#199e70; --series:#3987e5; --helix:#3987e5; --sheet:#d95926;
-    --grid:#2c2c2a;
+    --accent:#199e70; --series:#3987e5; --helix:#3987e5; --sheet:#d95926; --grid:#2c2c2a;
+    --bar:62px;
   }
   *{box-sizing:border-box}
   html,body{height:100%}
   body{margin:0;background:var(--plane);color:var(--ink);overflow:hidden;
-       font-family:system-ui,-apple-system,"Segoe UI",sans-serif;-webkit-font-smoothing:antialiased}
-  #viewer{position:fixed;inset:0;z-index:0}
+       font-family:system-ui,-apple-system,"Segoe UI",sans-serif;-webkit-font-smoothing:antialiased;
+       display:flex;flex-direction:column}
 
-  .hud{position:fixed;inset:0;z-index:2;display:grid;gap:14px;padding:14px;
-       grid-template-columns:356px 1fr 336px;align-items:start;pointer-events:none}
-  .rail{max-height:calc(100vh - 28px);overflow-y:auto;display:flex;flex-direction:column;
-        gap:12px;pointer-events:auto;scrollbar-width:thin;scrollbar-color:#39404d transparent}
-  .rail::-webkit-scrollbar{width:7px}
-  .rail::-webkit-scrollbar-thumb{background:#39404d;border-radius:4px}
-  .spacer{pointer-events:none}
-
-  .panel{background:rgba(20,25,34,.88);backdrop-filter:blur(14px);
-         -webkit-backdrop-filter:blur(14px);
-         border:1px solid var(--line);border-radius:14px;padding:15px 16px}
-  .eyebrow{font-size:10px;letter-spacing:.2em;text-transform:uppercase;
-           color:var(--accent);font-weight:700;margin-bottom:9px}
-  h1{margin:0 0 7px;font-size:21px;font-weight:650;letter-spacing:-.02em;line-height:1.2}
-  h1 .id{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;color:var(--accent)}
-  .subtitle{color:var(--ink2);font-size:12.5px;line-height:1.5}
-  .chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:11px}
-  .chip{font-size:10.5px;color:var(--muted);border:1px solid var(--line);
-        border-radius:999px;padding:4px 9px}
-
-  .search{display:flex;gap:7px}
-  .search input{flex:1;min-width:0;font:inherit;font-size:13px;color:var(--ink);
-       background:rgba(13,13,13,.7);border:1px solid var(--line);border-radius:9px;
-       padding:9px 12px;letter-spacing:.06em;text-transform:uppercase;
+  /* ------------------------------------------------------------- top bar */
+  .topbar{flex:none;height:var(--bar);display:flex;align-items:center;gap:16px;
+          padding:0 16px;border-bottom:1px solid var(--line);background:rgba(20,25,34,.7);
+          backdrop-filter:blur(14px)}
+  .brand{font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--accent);
+         font-weight:700;white-space:nowrap}
+  .search{display:flex;gap:6px;flex:none}
+  .search input{width:150px;font:inherit;font-size:13px;color:var(--ink);
+       background:rgba(13,13,13,.75);border:1px solid var(--line);border-radius:9px;
+       padding:8px 11px;letter-spacing:.06em;text-transform:uppercase;
        font-family:ui-monospace,Menlo,monospace}
   .search input:focus{outline:none;border-color:var(--accent)}
   .search input::placeholder{color:#5f6b7a;letter-spacing:0;text-transform:none;
        font-family:system-ui,sans-serif}
-  .examples{display:flex;flex-wrap:wrap;gap:5px;margin-top:9px}
-  .ex{font-size:10.5px;color:var(--muted);border:1px solid var(--line);border-radius:999px;
-      padding:3px 9px;cursor:pointer;font-family:ui-monospace,Menlo,monospace}
-  .ex:hover{color:var(--ink);border-color:var(--accent)}
+  .views{display:flex;gap:4px;background:rgba(13,13,13,.6);padding:4px;border-radius:10px;
+         border:1px solid var(--line)}
+  .view-btn{font:inherit;font-size:12px;color:var(--ink2);background:none;border:0;
+            border-radius:7px;padding:7px 15px;cursor:pointer;transition:.14s}
+  .view-btn:hover{color:var(--ink)}
+  .view-btn.on{background:var(--accent);color:#04120c;font-weight:650}
+  .topbar .spacer{flex:1}
+  .entry{display:flex;align-items:baseline;gap:10px;min-width:0}
+  .entry .id{font-family:ui-monospace,Menlo,monospace;font-size:17px;font-weight:650;
+             color:var(--accent)}
+  .entry .what{font-size:12.5px;color:var(--ink2);white-space:nowrap;overflow:hidden;
+               text-overflow:ellipsis;max-width:46vw}
+  .loadstate{font-size:11px;color:var(--muted);white-space:nowrap}
 
+  /* --------------------------------------------------------------- views */
+  main{flex:1;min-height:0;position:relative}
+  .view{position:absolute;inset:0;display:none;overflow:auto;padding:14px;
+        scrollbar-width:thin;scrollbar-color:#39404d transparent}
+  .view.on{display:block}
+  .view::-webkit-scrollbar{width:8px}
+  .view::-webkit-scrollbar-thumb{background:#39404d;border-radius:4px}
+
+  #vStructure.on{display:grid;grid-template-columns:minmax(0,1fr) 352px;gap:14px;
+                 overflow:hidden;padding:14px}
+  .stage{display:flex;flex-direction:column;gap:12px;min-width:0;min-height:0}
+  .viewerbox{flex:1;min-height:0;display:flex;flex-direction:column;
+             background:var(--surface);border:1px solid var(--line);border-radius:14px;
+             overflow:hidden}
+  .toolbar{flex:none;display:flex;flex-wrap:wrap;gap:5px;padding:11px 12px;
+           border-bottom:1px solid var(--line)}
+  #viewer{flex:1;min-height:0;position:relative}
+  .status{flex:none;display:flex;align-items:center;gap:8px;font-size:11.5px;
+          color:var(--ink2);padding:10px 14px;border-top:1px solid var(--line)}
+  .dot{width:7px;height:7px;border-radius:50%;background:var(--accent);flex:none}
+  .side{overflow-y:auto;display:flex;flex-direction:column;gap:12px;padding-right:2px;
+        scrollbar-width:thin;scrollbar-color:#39404d transparent}
+  .side::-webkit-scrollbar{width:7px}
+  .side::-webkit-scrollbar-thumb{background:#39404d;border-radius:4px}
+
+  .wrap{max-width:1180px;margin:0 auto;display:grid;gap:14px;
+        grid-template-columns:repeat(auto-fit,minmax(340px,1fr));align-items:start}
+  .reader{max-width:780px;margin:0 auto;display:flex;flex-direction:column;gap:14px}
+
+  /* -------------------------------------------------------------- pieces */
+  .panel{background:var(--surface);border:1px solid var(--line);border-radius:14px;
+         padding:15px 16px}
   h2{font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);
      margin:0 0 4px;font-weight:700}
-  .reads{font-size:11px;color:var(--ink2);line-height:1.5;margin:0 0 11px}
-  .grid{display:grid;gap:8px;grid-template-columns:1fr 1fr}
-  .card{background:rgba(27,34,48,.72);border:1px solid var(--line);
-        border-radius:10px;padding:10px 12px;transition:.14s}
+  .reads{font-size:11.5px;color:var(--ink2);line-height:1.55;margin:0 0 12px}
+  .grid{display:grid;gap:8px;grid-template-columns:repeat(auto-fit,minmax(142px,1fr))}
+  .card{background:var(--raised);border:1px solid var(--line);border-radius:10px;
+        padding:11px 13px;transition:.14s}
   .card.click,.card.more{cursor:pointer}
-  .card.click:hover,.card.more:hover{border-color:#3d4a5c;background:rgba(39,48,66,.85)}
+  .card.click:hover,.card.more:hover{border-color:#3d4a5c;background:#232c3c}
   .card.on{border-color:var(--accent);background:rgba(25,158,112,.14);
            box-shadow:inset 0 0 0 1px var(--accent)}
   .card.wide{grid-column:1 / -1}
   .label{font-size:9.5px;letter-spacing:.11em;text-transform:uppercase;color:var(--muted)}
   .value{font-size:19px;font-weight:620;margin-top:4px;letter-spacing:-.01em;word-break:break-word}
   .value.sm{font-size:14px;padding-top:3px;line-height:1.35}
-  .value.xs{font-size:12px;padding-top:3px;line-height:1.45;font-weight:500;color:var(--ink2)}
+  .value.xs{font-size:12.5px;padding-top:3px;line-height:1.5;font-weight:500;color:var(--ink2)}
   .note{font-size:10px;color:#6a6f78;margin-top:4px;line-height:1.4}
   .card.on .label,.card.on .note{color:#8fd9bd}
-  .detail{display:none;margin-top:9px;padding-top:9px;border-top:1px solid var(--line);
-          font-size:11px;line-height:1.6;color:var(--ink2);white-space:pre-wrap;
+  .detail{display:none;margin-top:10px;padding-top:10px;border-top:1px solid var(--line);
+          font-size:11.5px;line-height:1.65;color:var(--ink2);white-space:pre-wrap;
           word-break:break-word}
   .card.open .detail{display:block}
   .card.more .label::after{content:" ⌄";color:var(--muted)}
   .card.more.open .label::after{content:" ⌃"}
 
-  .toolbar{display:flex;flex-wrap:wrap;gap:5px}
-  .btn{font:inherit;font-size:11.5px;color:var(--ink2);background:rgba(27,34,48,.8);
+  .btn{font:inherit;font-size:11.5px;color:var(--ink2);background:var(--raised);
        border:1px solid var(--line);border-radius:8px;padding:6px 11px;cursor:pointer;
        transition:.14s}
   .btn:hover{color:var(--ink);border-color:#3d4a5c}
   .btn.on{color:#04120c;background:var(--accent);border-color:var(--accent);font-weight:650}
   .btn.go{background:var(--accent);color:#04120c;border-color:var(--accent);font-weight:650;
-          padding:9px 15px}
-
-  .status{display:flex;align-items:center;gap:8px;font-size:11.5px;color:var(--ink2);
-          margin-top:11px;padding-top:11px;border-top:1px solid var(--line)}
-  .dot{width:7px;height:7px;border-radius:50%;background:var(--accent);flex:none}
+          padding:8px 14px}
+  .examples{display:flex;flex-wrap:wrap;gap:5px;margin-top:10px}
+  .ex{font-size:10.5px;color:var(--muted);border:1px solid var(--line);border-radius:999px;
+      padding:3px 9px;cursor:pointer;font-family:ui-monospace,Menlo,monospace}
+  .ex:hover{color:var(--ink);border-color:var(--accent)}
   .hint{font-size:10px;color:#6a6f78;margin-top:8px;line-height:1.5}
   .stat{font-size:11px;color:var(--ink2);margin-top:8px}
   .stat b{color:var(--ink);font-weight:650}
-  .warn{font-size:11px;color:#e0b341;margin-top:9px;line-height:1.5}
+  .warn{font-size:11.5px;color:#e0b341;margin-top:10px;line-height:1.55}
 
   svg{display:block;width:100%;overflow:visible}
   canvas{display:block;width:100%;image-rendering:pixelated;border-radius:6px}
@@ -117,11 +143,21 @@
   .ramp{height:7px;flex:1;border-radius:3px;
         background:linear-gradient(90deg,#cde2fb,#6da7ec,#2a78d6,#184f95)}
 
-  table.contacts{width:100%;border-collapse:collapse;margin-top:11px;font-size:11px}
+  .seq{margin-top:12px;font-family:ui-monospace,Menlo,monospace;font-size:11px;
+       line-height:1.75;word-break:break-all;letter-spacing:.5px}
+  .seq span{cursor:pointer;padding:0 .5px;border-radius:2px}
+  .seq .h{color:var(--helix)} .seq .e{color:var(--sheet)} .seq .l{color:var(--muted)}
+  .seq span:hover{background:var(--accent);color:#04120c}
+  .seq span.gap{color:#3a4350;cursor:default}
+  .seq span.gap:hover{background:none;color:#3a4350}
+  .copyrow{display:flex;gap:6px;flex-wrap:wrap;margin-top:12px}
+  .copied{color:var(--accent);font-size:11px;align-self:center}
+
+  table.contacts{width:100%;border-collapse:collapse;margin-top:12px;font-size:11.5px}
   table.contacts th{text-align:left;font-weight:600;color:var(--muted);font-size:9.5px;
        letter-spacing:.1em;text-transform:uppercase;padding:0 0 6px;
        border-bottom:1px solid var(--line)}
-  table.contacts td{padding:5px 0;border-bottom:1px solid rgba(255,255,255,.05);
+  table.contacts td{padding:6px 0;border-bottom:1px solid rgba(255,255,255,.05);
        color:var(--ink2);font-variant-numeric:tabular-nums}
   table.contacts td:first-child{color:var(--ink);font-weight:550}
   .k-hbond{color:#3987e5} .k-hydrophobic{color:#d95926} .k-contact{color:var(--muted)}
@@ -130,128 +166,156 @@
        background:#0d0d0d;border:1px solid var(--line);border-radius:8px;padding:7px 10px;
        font-size:11px;color:var(--ink);white-space:nowrap;box-shadow:0 6px 24px rgba(0,0,0,.5)}
   .tip b{color:var(--accent)}
-
-  #splash{position:fixed;inset:0;z-index:5;display:flex;align-items:center;
-          justify-content:center;background:rgba(13,13,13,.82);backdrop-filter:blur(3px);
-          font-size:13px;color:var(--ink2);letter-spacing:.02em}
+  #splash{position:fixed;inset:var(--bar) 0 0 0;z-index:5;display:flex;align-items:center;
+          justify-content:center;background:rgba(13,13,13,.86);backdrop-filter:blur(3px);
+          font-size:13px;color:var(--ink2);text-align:center;padding:0 24px}
   #splash.gone{display:none}
-  footer{font-size:10px;color:#6a6f78;line-height:1.6}
+  footer{font-size:10.5px;color:#6a6f78;line-height:1.7}
   a{color:var(--accent);text-decoration:none}
+  a:hover{text-decoration:underline}
 
-  @media (max-width:1180px){
-    body{overflow:auto}
-    #viewer{position:relative;height:54vh}
-    .hud{position:static;grid-template-columns:1fr;padding:14px}
-    .rail{max-height:none;overflow:visible}
-    .spacer{display:none}
-    #splash{position:static;padding:30px 0}
+  @media (max-width:1080px){
+    body{overflow:auto;height:auto;min-height:100%}
+    .topbar{flex-wrap:wrap;height:auto;padding:10px 14px;gap:10px}
+    .entry{order:3;width:100%}
+    .topbar .spacer{display:none}
+    main{position:static}
+    .view{position:static;display:none;overflow:visible;height:auto}
+    .view.on{display:block}
+    #vStructure.on{display:flex;flex-direction:column;overflow:visible}
+    .viewerbox{height:58vh;flex:none}
+    .side{overflow:visible}
+    #splash{position:static;padding:40px 0}
   }
 </style>
 </head>
 <body>
 
-<div id="viewer"></div>
+<div class="topbar">
+  <span class="brand">Protein&nbsp;Explorer</span>
+  <div class="search">
+    <input id="q" placeholder="PDB ID" maxlength="4" spellcheck="false">
+    <button class="btn go" id="go">Load</button>
+  </div>
+  <div class="views">
+    <button class="view-btn on" data-view="structure">Structure</button>
+    <button class="view-btn" data-view="lab">Lab</button>
+    <button class="view-btn" data-view="paper">Paper</button>
+  </div>
+  <div class="spacer"></div>
+  <div class="entry"><span class="id" id="barId"></span><span class="what" id="barWhat"></span></div>
+  <span class="loadstate" id="loadState">ready</span>
+</div>
+
+<main>
+
+  <section class="view on" id="vStructure">
+    <div class="stage">
+      <div class="viewerbox">
+        <div class="toolbar">
+          <button class="btn on" data-style="cartoon">Cartoon</button>
+          <button class="btn" data-style="stick">Sticks</button>
+          <button class="btn" data-style="sphere">Spheres</button>
+          <button class="btn" data-style="surface">Surface</button>
+          <button class="btn" id="foldBtn">By fold</button>
+          <button class="btn" id="spinBtn">Spin</button>
+          <button class="btn" id="resetBtn">Reset</button>
+        </div>
+        <div id="viewer"></div>
+        <div class="status"><span class="dot"></span><span id="statusText">Whole structure</span></div>
+      </div>
+    </div>
+
+    <div class="side">
+      <div class="panel" id="foldPanel"></div>
+
+      <div class="panel">
+        <h2>Ramachandran · φ against ψ</h2>
+        <p class="reads">Every residue by its two backbone rotations. Points cluster where
+          the chain is helix or sheet; strays are worth a look.</p>
+        <svg id="rama" viewBox="0 0 300 300" style="height:300px"></svg>
+        <div class="legend">
+          <span><i class="sw h"></i>helix</span>
+          <span><i class="sw e"></i>sheet</span>
+          <span><i class="sw l"></i>loop / turn</span>
+        </div>
+        <div class="hint">Shaded blocks are the broadly favoured regions. Click a point
+          to jump to that residue.</div>
+      </div>
+
+      <div class="panel">
+        <h2>Contact map · Cα to Cα</h2>
+        <p class="reads">Residue <i>i</i> against residue <i>j</i>, by how close they sit.
+          The diagonal is the chain itself; bands off it are where distant parts of the
+          sequence fold back together.</p>
+        <canvas id="contact"></canvas>
+        <div class="ends"><span id="resFirst"></span><span>residue number →</span><span id="resLast"></span></div>
+        <div class="scale"><span>close</span><span class="ramp"></span><span>12 Å</span></div>
+        <div class="hint">Hover for the pair, click to highlight both residues.</div>
+      </div>
+
+      <div class="panel">
+        <h2>Mobility against depth</h2>
+        <p class="reads">B-factor against distance from the centre of mass. Buried residues
+          are pinned; surface ones move.</p>
+        <svg id="depth" viewBox="0 0 300 190" style="height:190px"></svg>
+        <div class="stat" id="depthStat"></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="view" id="vLab">
+    <div class="wrap">
+      <div class="panel" style="grid-column:1/-1">
+        <h2>Export</h2>
+        <p class="reads">Every field on these pages as one tab-separated line, ready to
+          paste as a row in a comparison spreadsheet. Copy the headers once, then a row
+          per structure.</p>
+        <div class="copyrow">
+          <button class="btn" id="copyRow">Copy this row</button>
+          <button class="btn" id="copyHead">Copy column headers</button>
+          <span class="copied" id="copyNote"></span>
+        </div>
+      </div>
+      <div class="panel" id="inventoryPanel"></div>
+      <div class="panel" id="purificationPanel"></div>
+      <div class="panel" id="crystalPanel"></div>
+      <div class="panel" id="sitePanel"></div>
+      <div class="panel" id="qualityPanel"></div>
+    </div>
+  </section>
+
+  <section class="view" id="vPaper">
+    <div class="reader">
+      <div class="panel" id="paperPanel"></div>
+      <div class="panel" id="provenancePanel"></div>
+      <div class="panel">
+        <h2>Start from</h2>
+        <div class="examples">
+          <span class="ex" data-id="1JNK">1JNK · JNK3 kinase</span>
+          <span class="ex" data-id="1LYZ">1LYZ · lysozyme</span>
+          <span class="ex" data-id="4HHB">4HHB · haemoglobin</span>
+          <span class="ex" data-id="1ATP">1ATP · protein kinase A</span>
+          <span class="ex" data-id="6LU7">6LU7 · SARS-CoV-2 protease</span>
+        </div>
+        <footer style="margin-top:16px">
+          Structures from the <a href="https://www.rcsb.org" target="_blank">RCSB Protein Data
+          Bank</a> · viewer by <a href="https://3dmol.csb.pitt.edu" target="_blank">3Dmol.js</a> ·
+          every parameter on these pages is computed in your browser from the coordinate file.<br>
+          Built by Juvasshini Surresh Babu.
+        </footer>
+      </div>
+    </div>
+  </section>
+
+</main>
+
 <div class="tip" id="tip"></div>
 <div id="splash">loading…</div>
-
-<div class="hud">
-
-  <div class="rail">
-    <div class="panel">
-      <div class="eyebrow">Protein Explorer</div>
-      <div class="search">
-        <input id="q" placeholder="PDB ID, e.g. 1JNK" maxlength="4" spellcheck="false">
-        <button class="btn go" id="go">Load</button>
-      </div>
-      <div class="examples">
-        <span class="ex" data-id="1JNK">1JNK · JNK3</span>
-        <span class="ex" data-id="1LYZ">1LYZ · lysozyme</span>
-        <span class="ex" data-id="4HHB">4HHB · haemoglobin</span>
-        <span class="ex" data-id="1ATP">1ATP · PKA</span>
-      </div>
-      <div class="status"><span class="dot"></span><span id="loadState">ready</span></div>
-    </div>
-
-    <div class="panel" id="identity"></div>
-    <div class="panel" id="structurePanel"></div>
-    <div class="panel" id="foldPanel"></div>
-    <div class="panel" id="purificationPanel"></div>
-    <div class="panel" id="crystalPanel"></div>
-    <div class="panel" id="literaturePanel"></div>
-
-    <div class="panel">
-      <footer>
-        Structure data from the <a href="https://www.rcsb.org" target="_blank">RCSB Protein
-        Data Bank</a> · rendered with 3Dmol.js · all parameters computed in your browser.<br>
-        Built by Juvasshini Surresh Babu.
-      </footer>
-    </div>
-  </div>
-
-  <div class="spacer"></div>
-
-  <div class="rail">
-    <div class="panel">
-      <h2>View</h2>
-      <div class="toolbar">
-        <button class="btn on" data-style="cartoon">Cartoon</button>
-        <button class="btn" data-style="stick">Sticks</button>
-        <button class="btn" data-style="sphere">Spheres</button>
-        <button class="btn" data-style="surface">Surface</button>
-        <button class="btn" id="foldBtn">By fold</button>
-        <button class="btn" id="spinBtn">Spin</button>
-        <button class="btn" id="resetBtn">Reset</button>
-      </div>
-      <div class="status"><span class="dot"></span><span id="statusText">Whole structure</span></div>
-      <div class="hint">Drag to rotate · scroll to zoom · right-drag to pan.
-        Click any card or plot mark to highlight it.</div>
-    </div>
-
-    <div class="panel" id="sitePanel"></div>
-    <div class="panel" id="qualityPanel"></div>
-
-    <div class="panel">
-      <h2>Ramachandran · φ against ψ</h2>
-      <p class="reads">Every residue by its two backbone rotations. Points cluster
-        where the chain is helix or sheet; strays are worth a look.</p>
-      <svg id="rama" viewBox="0 0 300 300" style="height:300px"></svg>
-      <div class="legend">
-        <span><i class="sw h"></i>helix</span>
-        <span><i class="sw e"></i>sheet</span>
-        <span><i class="sw l"></i>loop / turn</span>
-      </div>
-      <div class="hint">Shaded blocks are the broadly favoured regions.
-        Click a point to jump to that residue.</div>
-    </div>
-
-    <div class="panel">
-      <h2>Contact map · Cα to Cα</h2>
-      <p class="reads">Residue <i>i</i> against residue <i>j</i>, coloured by how close
-        they sit. The diagonal is the chain itself; bands off it are where distant
-        parts of the sequence fold back together.</p>
-      <canvas id="contact"></canvas>
-      <div class="ends"><span id="resFirst"></span><span>residue number →</span><span id="resLast"></span></div>
-      <div class="scale"><span>close</span><span class="ramp"></span><span>12 Å</span></div>
-      <div class="hint">Hover for the pair, click to highlight both residues.</div>
-    </div>
-
-    <div class="panel">
-      <h2>Mobility against depth</h2>
-      <p class="reads">B-factor against distance from the centre of mass. Buried
-        residues are pinned; surface ones move.</p>
-      <svg id="depth" viewBox="0 0 300 190" style="height:190px"></svg>
-      <div class="stat" id="depthStat"></div>
-    </div>
-  </div>
-
-</div>
 
 <script>
 (function(){
 "use strict";
-
-/* ========================================================== reference data */
-
 const AA3 = {ALA:"A",ARG:"R",ASN:"N",ASP:"D",CYS:"C",GLN:"Q",GLU:"E",GLY:"G",
   HIS:"H",ILE:"I",LEU:"L",LYS:"K",MET:"M",PHE:"F",PRO:"P",SER:"S",THR:"T",
   TRP:"W",TYR:"Y",VAL:"V"};
@@ -448,12 +512,18 @@ const dot = (a, b) => a[0]*b[0] + a[1]*b[1] + a[2]*b[2];
 const norm = a => Math.hypot(a[0], a[1], a[2]);
 const dist = (a, b) => Math.hypot(a[0]-b[0], a[1]-b[1], a[2]-b[2]);
 
+// torsion about the p1-p2 bond, IUPAC sign convention.
+// Verified by round-tripping 14 known angles through a NeRF placement.
 function dihedral(p0, p1, p2, p3){
-  const b0 = sub(p0, p1), b1 = sub(p2, p1), b2 = sub(p3, p2);
-  const n1 = cross(b0, b1), n2 = cross(b1, b2);
-  const m = cross(n1, b1.map(v => v / norm(b1)));
-  const x = dot(n1, n2), y = dot(m, n2);
-  return Math.atan2(y, x) * 180 / Math.PI;
+  const b0 = sub(p0, p1);
+  let b1 = sub(p2, p1);
+  const len = norm(b1) || 1;
+  b1 = b1.map(v => v / len);
+  const b2 = sub(p3, p2);
+  const d0 = dot(b0, b1), d2 = dot(b2, b1);
+  const v = [b0[0]-d0*b1[0], b0[1]-d0*b1[1], b0[2]-d0*b1[2]];
+  const w = [b2[0]-d2*b1[0], b2[1]-d2*b1[1], b2[2]-d2*b1[2]];
+  return Math.atan2(dot(cross(b1, v), w), dot(v, w)) * 180 / Math.PI;
 }
 
 /* ============================================================== analysis */
@@ -660,58 +730,74 @@ async function loadEntry(id){
 
 function renderPanels(d){
   const m = d.meta || {}, p = d.params || {};
-  const res = m.resolution ? m.resolution.toFixed(2) + " Å" : "resolution n/a";
+  const res = m.resolution ? m.resolution.toFixed(2) + " Å" : "—";
 
-  $("identity").innerHTML =
-    `<div class="eyebrow">Entry</div>
-     <h1><span class="id">${esc(d.id)}</span> ${esc(d.header.classification || "")}</h1>
-     <div class="subtitle">${esc(m.description || d.header.title || d.header.molecule)}</div>
-     <div class="chips">
-       ${[m.method || "—", res, `chain ${d.main}`, `${d.atomCount.toLocaleString()} atoms`,
-          d.header.deposited ? "deposited " + d.header.deposited : ""]
-         .filter(Boolean).map(c => `<span class="chip">${esc(c)}</span>`).join("")}
-     </div>`;
+  $("barId").textContent = d.id;
+  $("barWhat").textContent = m.description || d.header.title || d.header.molecule || "";
+  document.title = d.id + " · Protein Explorer";
 
-  $("structurePanel").innerHTML = `<h2>Structure</h2><div class="grid">` + [
-    card("Construct", d.construct.length || "—", "residues in SEQRES"),
-    card("Observed", d.observed.length, "resolved in density"),
-    card("Unresolved", Math.max(0, d.construct.length - d.observed.length), "too disordered to model"),
-    card("Ligands", d.ligNames.join(", ") || "none", d.ligNames.length ? "click to isolate" : "nothing bound",
-         {show: d.ligNames.length ? "ligands" : null, size: "sm"}),
-    card("Waters", d.waters, "click to show solvent", {show: "waters"}),
-    card("Chains", d.chainCount, "in the asymmetric unit")
-  ].join("") + `</div>`;
+  /* ---------------------------------------------------------- structure */
 
   const ssCount = {h:0, e:0, c:0};
   for (const r of d.ca) ssCount[r.ss || "c"]++;
   const total = d.ca.length || 1;
+
   $("foldPanel").innerHTML =
     `<h2>Fold</h2>
      <p class="reads">Secondary structure along the chain. Each block is one element —
        click it to pull that helix or strand out of the structure.</p>
      <svg id="ssTrack" viewBox="0 0 320 34" preserveAspectRatio="none" style="height:34px"></svg>
-     <div class="ends"><span>${d.ca.length ? d.ca[0].resi : ""}</span><span>${d.ca.length ? d.ca[d.ca.length-1].resi : ""}</span></div>
+     <div class="ends"><span>${d.ca.length ? d.ca[0].resi : ""}</span>
+       <span>${d.ca.length ? d.ca[d.ca.length-1].resi : ""}</span></div>
      <div class="grid" style="margin-top:12px">` + [
       card("Helix", Math.round(100*ssCount.h/total) + "%", "click to isolate", {show:"helix"}),
       card("Sheet", Math.round(100*ssCount.e/total) + "%", "click to isolate", {show:"sheet"}),
-      card("Loop / turn", Math.round(100*ssCount.c/total) + "%", "click to isolate", {show:"loop"}),
-      card("Assigned by", "3Dmol.js", "backbone geometry, in-browser", {size:"sm"})
+      card("Loop / turn", Math.round(100*ssCount.c/total) + "%", "click to isolate", {show:"loop"})
+    ].join("") + `</div>
+     <h2 style="margin-top:16px">Sequence</h2>
+     <p class="reads">The resolved chain, one letter per residue, coloured by fold.
+       Click a letter to jump to it. Dots are residues the density lost.</p>
+     <div class="seq" id="seqStrip"></div>`;
+
+  /* ---------------------------------------------------------------- lab */
+
+  $("inventoryPanel").innerHTML =
+    `<h2>What is in this file</h2>
+     <p class="reads">A coordinate file holds the protein, the things bound to it and
+       hundreds of ordered waters, all as "residues". They are not one number.</p>
+     <div class="grid">` + [
+      card("Construct", d.construct.length || "—", "residues in SEQRES"),
+      card("Observed", d.observed.length, "resolved in the density"),
+      card("Unresolved", Math.max(0, d.construct.length - d.observed.length), "too disordered to model"),
+      card("Ligands", d.ligNames.join(", ") || "none",
+           d.ligNames.length ? "click to isolate" : "nothing bound",
+           {show: d.ligNames.length ? "ligands" : null, size:"sm"}),
+      card("Waters", d.waters, "click to show solvent", {show:"waters"}),
+      card("Chains", d.chainCount, "in the asymmetric unit"),
+      card("Atoms", d.atomCount.toLocaleString(), "every record in the file"),
+      card("Resolution", res, m.method ? String(m.method).toLowerCase() : "")
     ].join("") + `</div>`;
 
-  $("purificationPanel").innerHTML = `<h2>Purification parameters</h2><div class="grid">` + [
-    card("Mol. weight", (p.mw/1000).toFixed(1) + " kDa", "expected SDS-PAGE band"),
-    card("Theoretical pI", p.pI.toFixed(2), `binds anion exchange above pH ${p.pI.toFixed(1)}`),
-    card("ε280 reduced", p.epsReduced.toLocaleString(), "M⁻¹ cm⁻¹"),
-    card("A280 at 1 mg/mL", p.a280.toFixed(3), "divide your A280 by this"),
-    card("Cysteines", p.cys, "click · reducing agent?", {show:"cys"}),
-    card("Histidines", p.his, "click · His-tag background", {show:"his"}),
-    card("Trp / Tyr", p.trp + " / " + p.tyr, "click · absorbs at 280 nm", {show:"aromatic", size:"sm"}),
-    card("GRAVY", p.gravy.toFixed(3), p.gravy < 0 ? "negative = hydrophilic" : "positive = hydrophobic")
-  ].join("") + `</div>`;
+  $("purificationPanel").innerHTML =
+    `<h2>Before the column</h2>
+     <p class="reads">Everything here is computed from the construct sequence — the numbers
+       you would want in front of you when planning a prep.</p>
+     <div class="grid">` + [
+      card("Mol. weight", (p.mw/1000).toFixed(1) + " kDa", "expected SDS-PAGE band"),
+      card("Theoretical pI", p.pI.toFixed(2), `binds anion exchange above pH ${p.pI.toFixed(1)}`),
+      card("ε280 reduced", p.epsReduced.toLocaleString(), "M⁻¹ cm⁻¹"),
+      card("A280 at 1 mg/mL", p.a280.toFixed(3), "divide your A280 by this"),
+      card("Cysteines", p.cys, "click · reducing agent?", {show:"cys"}),
+      card("Histidines", p.his, "click · His-tag background", {show:"his"}),
+      card("Trp / Tyr", p.trp + " / " + p.tyr, "click · absorbs at 280 nm",
+           {show:"aromatic", size:"sm"}),
+      card("GRAVY", p.gravy.toFixed(3),
+           p.gravy < 0 ? "negative = hydrophilic" : "positive = hydrophobic")
+    ].join("") + `</div>`;
 
   const c = d.crystal || {};
-  const growText = [m.growMethod, m.pH ? "pH " + m.pH : "", m.temp ? m.temp + " K" : "",
-                    m.growDetails].filter(Boolean).join(" · ");
+  const recipe = [m.growMethod, m.pH != null ? "pH " + m.pH : "",
+                  m.temp != null ? m.temp + " K" : "", m.growDetails].filter(Boolean).join(" · ");
   $("crystalPanel").innerHTML =
     `<h2>Crystallisation</h2>
      <p class="reads">The crystal this structure came from, and the recipe that grew it.</p>
@@ -721,63 +807,26 @@ function renderPanels(d){
       card("Matthews Vm", c.vm ? c.vm.toFixed(2) : "—", "Å³/Da · typical 1.8–4.0"),
       card("Solvent", c.solvent != null ? c.solvent + "%" : "—", "of the crystal is water"),
       card("Crystallisation pH", m.pH != null ? m.pH : "—",
-           m.growMethod ? String(m.growMethod).toLowerCase() : "from the deposition"),
+           m.growMethod ? String(m.growMethod).toLowerCase() : "as deposited"),
       card("Temperature", m.temp != null ? m.temp + " K" : "—",
            m.temp != null ? (m.temp - 273).toFixed(0) + " °C" : ""),
-      card("Methionines", p.met, p.met ? `1 per ${Math.round(p.n/p.met)} residues · SeMet ${Math.round(p.n/p.met) <= 100 ? "viable" : "marginal"}` : "SeMet phasing"),
+      card("Methionines", p.met,
+           p.met ? `1 per ${Math.round(p.n/p.met)} residues · SeMet ${Math.round(p.n/p.met) <= 100 ? "viable" : "marginal"}`
+                 : "SeMet phasing"),
       card("Glycosylation", p.sequons, "N-X-S/T sequons · heterogeneity risk"),
       card("Chain breaks", d.gaps.length,
-           d.gaps.length ? d.gaps.map(g => g[0] + "–" + g[1]).join(", ").slice(0, 40) : "none",
-           {detail: d.gaps.length ? "Missing stretches: " + d.gaps.map(g => g[0] + "–" + g[1]).join(", ") : null}),
+           d.gaps.length ? "click to see where" : "none",
+           {detail: d.gaps.length ? "Missing stretches:\n" + d.gaps.map(g => g[0] + "–" + g[1]).join("\n") : null}),
       card("Entropy patches", d.serSites.length, "click · Lys/Glu/Gln to mutate",
            {show: d.serSites.length ? "ser" : null}),
-      growText ? card("Recipe", (m.growDetails || growText).slice(0, 52) + "…",
-                      "click for the full deposited conditions",
-                      {wide:true, size:"xs", detail: growText}) : "",
-      d.mutations.length ? card("Engineered changes", d.mutations.length,
-                      "click for the SEQADV records",
-                      {wide:true, detail: d.mutations.join("\n")}) : ""
+      recipe ? card("Recipe as deposited", (m.growDetails || recipe).slice(0, 64) + "…",
+                    "click to open", {wide:true, size:"xs", detail: recipe}) : ""
     ].join("") + `</div>`;
 
-  const aff = (m.affinity || []).map(a =>
-    `${a.type} ${a.comp_id ? "(" + a.comp_id + ") " : ""}${a.value} ${a.unit}`).join("\n");
-  $("literaturePanel").innerHTML =
-    `<h2>Primary citation</h2>
-     <p class="reads">The paper this structure was published in, with the fields that
-       describe how it was made. Click a box to open it.</p>
-     <div class="grid">` + [
-      m.title ? card("Paper", m.title.slice(0, 60) + (m.title.length > 60 ? "…" : ""),
-                     [m.journal, m.year].filter(Boolean).join(" · "),
-                     {wide:true, size:"xs",
-                      detail: [m.title, m.authors, [m.journal, m.year].filter(Boolean).join(" "),
-                               m.doi ? "doi:" + m.doi : ""].filter(Boolean).join("\n\n")})
-              : card("Paper", "—", "no citation returned", {wide:true, size:"sm"}),
-      card("Expression system", m.host || d.header.expression || "—", "host organism", {size:"xs"}),
-      card("Source organism", m.organism || d.header.organism || "—", "where the gene came from", {size:"xs"}),
-      card("Construct", d.header.fragment || "full length", "as deposited", {size:"xs"}),
-      card("Mutations", m.mutationCount != null ? m.mutationCount : d.mutations.length,
-           "against the reference sequence"),
-      card("R-work / R-free",
-           (m.rwork != null ? m.rwork.toFixed(3) : "—") + " / " + (m.rfree != null ? m.rfree.toFixed(3) : "—"),
-           "refinement quality", {size:"sm"}),
-      card("Complex", d.ligNames.length ? "bound" : "apo",
-           d.ligNames.length ? d.ligNames.join(", ") : "nothing in the site", {size:"sm"}),
-      aff ? card("Measured affinity", aff.split("\n")[0], "from the entry's binding data",
-                 {wide:true, size:"xs", detail: aff}) : "",
-      m.doi ? `<div class="card wide"><div class="label">Links</div>
-                 <div class="value xs"><a href="https://doi.org/${esc(m.doi)}" target="_blank">doi.org/${esc(m.doi)}</a>
-                 &nbsp;·&nbsp; <a href="https://www.rcsb.org/structure/${esc(d.id)}" target="_blank">RCSB entry</a>
-                 ${m.pubmed ? `&nbsp;·&nbsp; <a href="https://pubmed.ncbi.nlm.nih.gov/${esc(m.pubmed)}" target="_blank">PubMed</a>` : ""}
-                 </div></div>` : ""
-    ].join("") + `</div>` +
-    (m.error ? `<div class="warn">Entry metadata could not be fetched (${esc(m.error)}).
-       Everything above this line is read straight from the coordinate file instead.</div>` : "");
-
-  if (d.site){
-    $("sitePanel").innerHTML =
-      `<h2>Binding site</h2>
-       <p class="reads">Everything within 4.5 Å of the bound ligand, with the contacts
-         split by type.</p>
+  $("sitePanel").innerHTML = d.site
+    ? `<h2>Binding site</h2>
+       <p class="reads">Everything within 4.5 Å of the bound ligand, with the contacts split
+         by type. Hydrogen bonds hold the ligand in register; hydrophobic packing holds it in.</p>
        <div class="grid">` + [
         card("Site residues", d.site.rows.length, "click to isolate the pocket", {show:"site"}),
         card("H-bond contacts", d.site.hbonds, "N/O pairs under 3.5 Å"),
@@ -785,28 +834,110 @@ function renderPanels(d){
         card("Ligands", d.site.ligNames.join(", "), "in the site", {size:"sm"})
       ].join("") + `</div>
        <table class="contacts"><thead><tr><th>residue</th><th>closest</th><th>contact</th></tr></thead>
-       <tbody>` + d.site.rows.slice(0, 18).map(r =>
+       <tbody>` + d.site.rows.slice(0, 20).map(r =>
          `<tr><td>${esc(r.resn)} ${r.resi}</td><td>${r.d.toFixed(2)} Å</td>
-          <td class="k-${r.kind}">${r.kind}</td></tr>`).join("") + `</tbody></table>`;
-  } else {
-    $("sitePanel").innerHTML = `<h2>Binding site</h2>
-      <p class="reads">No ligand in this entry — nothing to analyse.</p>`;
-  }
+          <td class="k-${r.kind}">${r.kind}</td></tr>`).join("") + `</tbody></table>`
+    : `<h2>Binding site</h2><p class="reads">No ligand in this entry — nothing to analyse.
+       Try a structure solved with an inhibitor bound.</p>`;
 
   $("qualityPanel").innerHTML = d.quality.length
     ? `<h2>Ligand quality</h2>
        <p class="reads">A ligand with a much higher B-factor than the protein, or occupancy
-         below 1, is weakly supported by the density. Protein mean B is ${d.proteinB} Å².</p>
-       <table class="contacts"><thead><tr><th>ligand</th><th>mean B</th><th>occupancy</th>
-       <th>vs protein</th></tr></thead><tbody>` + d.quality.map(q =>
-         `<tr><td>${esc(q.resn)}</td><td>${q.b.toFixed(1)} Å²</td><td>${q.occ.toFixed(2)}</td>
-          <td>${q.ratio ? "×" + q.ratio : "—"}</td></tr>`).join("") + `</tbody></table>`
+         under 1, is weakly supported by the density. Protein mean B here is ${d.proteinB} Å².</p>
+       <table class="contacts"><thead><tr><th>ligand</th><th>atoms</th><th>mean B</th>
+       <th>occupancy</th><th>vs protein</th></tr></thead><tbody>` + d.quality.map(q =>
+         `<tr><td>${esc(q.resn)}</td><td>${q.atoms}</td><td>${q.b.toFixed(1)} Å²</td>
+          <td>${q.occ.toFixed(2)}</td><td>${q.ratio ? "×" + q.ratio : "—"}</td></tr>`).join("")
+       + `</tbody></table>`
     : `<h2>Ligand quality</h2><p class="reads">Nothing bound to assess.</p>`;
+
+  /* -------------------------------------------------------------- paper */
+
+  const aff = (m.affinity || []).map(a =>
+    `${a.type}${a.comp_id ? " (" + a.comp_id + ")" : ""} = ${a.value} ${a.unit}`);
+
+  $("paperPanel").innerHTML =
+    `<h2>Primary citation</h2>` +
+    (m.title
+      ? `<p class="reads" style="font-size:15px;color:var(--ink);line-height:1.5;margin-bottom:10px">
+           ${esc(m.title)}</p>
+         <p class="reads">${esc(m.authors || "")}</p>
+         <p class="reads" style="margin-bottom:16px">
+           ${[esc(m.journal), m.year].filter(Boolean).join(" · ")}
+           ${m.released ? " · released " + esc(m.released) : ""}</p>`
+      : `<p class="reads">No citation came back for this entry.</p>`) +
+    `<div class="grid">` + [
+      card("Method", m.method || "—", "how the structure was solved", {size:"sm"}),
+      card("Resolution", res, "lower is sharper"),
+      card("R-work / R-free",
+           (m.rwork != null ? m.rwork.toFixed(3) : "—") + " / " + (m.rfree != null ? m.rfree.toFixed(3) : "—"),
+           "refinement quality", {size:"sm"}),
+      card("Complex", d.ligNames.length ? "bound" : "apo",
+           d.ligNames.length ? d.ligNames.join(", ") : "nothing in the site", {size:"sm"}),
+      aff.length ? card("Measured affinity", aff[0], "from the entry's binding data",
+                        {wide:true, size:"xs", detail: aff.join("\n")}) : ""
+    ].join("") + `</div>` +
+    (m.doi || m.pubmed
+      ? `<p class="reads" style="margin-top:14px">
+          ${m.doi ? `<a href="https://doi.org/${esc(m.doi)}" target="_blank">doi.org/${esc(m.doi)}</a> &nbsp;·&nbsp; ` : ""}
+          <a href="https://www.rcsb.org/structure/${esc(d.id)}" target="_blank">RCSB entry</a>
+          ${m.pubmed ? ` &nbsp;·&nbsp; <a href="https://pubmed.ncbi.nlm.nih.gov/${esc(m.pubmed)}" target="_blank">PubMed</a>` : ""}
+         </p>` : "");
+
+  $("provenancePanel").innerHTML =
+    `<h2>How this protein was made</h2>
+     <p class="reads">Read out of the deposition itself, not from the paper's text.</p>
+     <div class="grid">` + [
+      card("Expression system", m.host || d.header.expression || "—", "host organism", {size:"xs"}),
+      card("Source organism", m.organism || d.header.organism || "—", "where the gene came from", {size:"xs"}),
+      card("Construct", d.header.fragment || "full length", "as deposited", {size:"xs"}),
+      card("Mutations", m.mutationCount != null ? m.mutationCount : d.mutations.length,
+           d.mutations.length ? "click for the SEQADV records" : "against the reference sequence",
+           {detail: d.mutations.length ? d.mutations.join("\n") : null}),
+      d.tags.length ? card("Expression tags", d.tags.length, "click for the records",
+                           {wide:true, detail: d.tags.join("\n")}) : "",
+      recipe ? card("Crystallisation", (m.growDetails || recipe).slice(0, 64) + "…",
+                    "click for the full recipe", {wide:true, size:"xs", detail: recipe}) : ""
+    ].join("") + `</div>` +
+    (m.error ? `<div class="warn">Entry metadata could not be fetched (${esc(m.error)}).
+       Everything shown is read straight from the coordinate file instead.</div>` : "");
 
   document.querySelectorAll(".card.more").forEach(c =>
     c.addEventListener("click", () => c.classList.toggle("open")));
   document.querySelectorAll(".card.click").forEach(c =>
     c.addEventListener("click", () => show(c.dataset.show)));
+}
+
+/* ======================================================== sequence strip */
+
+function drawSequence(d){
+  const host = $("seqStrip");
+  if (!host) return;
+  host.innerHTML = "";
+  const byResi = {};
+  for (const r of d.ca) byResi[r.resi] = r;
+  const first = d.ca.length ? d.ca[0].resi : 0;
+  const last  = d.ca.length ? d.ca[d.ca.length-1].resi : 0;
+
+  for (let i = first; i <= last; i++){
+    const r = byResi[i];
+    const span = document.createElement("span");
+    if (!r){
+      span.className = "gap";
+      span.textContent = "·";
+      span.title = i + " — not resolved";
+    } else {
+      const kind = r.ss === "h" ? "h" : r.ss === "e" ? "e" : "l";
+      span.className = kind;
+      span.textContent = AA3[r.resn] || "x";
+      span.title = r.resn + " " + r.resi +
+        " · " + (kind === "h" ? "helix" : kind === "e" ? "sheet" : "loop") +
+        " · B " + r.b.toFixed(1);
+      span.addEventListener("click", () =>
+        showResidues([r.resi], r.resn + " " + r.resi + " · B " + r.b.toFixed(1) + " Å²"));
+    }
+    host.appendChild(span);
+  }
 }
 
 /* ================================================================== plots */
@@ -994,6 +1125,59 @@ function drawDepth(d){
     `Pearson <b>r = ${r.toFixed(2)}</b> — ${strength}. Dashed line is the least-squares fit.`;
 }
 
+/* ======================================================= spreadsheet row */
+
+const ROW_FIELDS = [
+  ["PDB code",            d => d.id],
+  ["Title",               d => d.meta.description || d.header.title],
+  ["Construct",           d => d.header.fragment || "full length"],
+  ["Mutations",           d => d.meta.mutationCount != null ? d.meta.mutationCount : d.mutations.length],
+  ["Expression system",   d => d.meta.host || d.header.expression || ""],
+  ["Source organism",     d => d.meta.organism || d.header.organism || ""],
+  ["MW (kDa)",            d => (d.params.mw/1000).toFixed(1)],
+  ["Theoretical pI",      d => d.params.pI.toFixed(2)],
+  ["e280 (M-1cm-1)",      d => d.params.epsReduced],
+  ["Residues observed",   d => d.observed.length],
+  ["Residues in construct", d => d.construct.length],
+  ["Method",              d => d.meta.method || ""],
+  ["Resolution (A)",      d => d.meta.resolution != null ? d.meta.resolution.toFixed(2) : ""],
+  ["R-work",              d => d.meta.rwork != null ? d.meta.rwork.toFixed(3) : ""],
+  ["R-free",              d => d.meta.rfree != null ? d.meta.rfree.toFixed(3) : ""],
+  ["Space group",         d => d.crystal.spacegroup || ""],
+  ["Unit cell",           d => d.crystal.cell || ""],
+  ["Matthews Vm",         d => d.crystal.vm || ""],
+  ["Solvent content (%)", d => d.crystal.solvent != null ? d.crystal.solvent : ""],
+  ["Crystallisation pH",  d => d.meta.pH != null ? d.meta.pH : ""],
+  ["Temperature (K)",     d => d.meta.temp != null ? d.meta.temp : ""],
+  ["Crystallisation conditions", d => d.meta.growDetails || ""],
+  ["Crystallisation method",     d => d.meta.growMethod || ""],
+  ["Apo or bound",        d => d.ligNames.length ? "bound" : "apo"],
+  ["Ligands",             d => d.ligNames.join("; ")],
+  ["Affinity",            d => (d.meta.affinity || []).map(a =>
+                                 `${a.type}${a.comp_id ? " (" + a.comp_id + ")" : ""} ${a.value} ${a.unit}`).join("; ")],
+  ["Helix (%)",           d => Math.round(100*d.ca.filter(r=>r.ss==="h").length/(d.ca.length||1))],
+  ["Sheet (%)",           d => Math.round(100*d.ca.filter(r=>r.ss==="e").length/(d.ca.length||1))],
+  ["Chain breaks",        d => d.gaps.length],
+  ["DOI",                 d => d.meta.doi || ""],
+  ["RCSB link",           d => "https://www.rcsb.org/structure/" + d.id]
+];
+
+const cleanCell = v => String(v == null ? "" : v).replace(/[\t\r\n]+/g, " ").trim();
+
+function copyToClipboard(text, note){
+  const done = () => { if (note){ note.textContent = "copied"; setTimeout(() => note.textContent = "", 2000); } };
+  if (navigator.clipboard && window.isSecureContext){
+    navigator.clipboard.writeText(text).then(done, () => fallback());
+  } else fallback();
+  function fallback(){
+    const ta = document.createElement("textarea");
+    ta.value = text; ta.style.position = "fixed"; ta.style.opacity = "0";
+    document.body.appendChild(ta); ta.select();
+    try { document.execCommand("copy"); done(); } catch (e){ if (note) note.textContent = "copy failed"; }
+    document.body.removeChild(ta);
+  }
+}
+
 /* ============================================================ 3D controls */
 
 function selectors(d){
@@ -1028,8 +1212,7 @@ function paintBase(dim){
     else cartoon.color = "spectrum";
     viewer.setStyle({}, {cartoon});
     if (baseStyle === "surface"){
-      viewer.addSurface($3Dmol.SurfaceType.VDW,
-        {opacity:0.55, color:"#2f6b8f"}, {hetflag:false});
+      viewer.addSurface($3Dmol.SurfaceType.VDW, {opacity:0.55, color:"#2f6b8f"}, {hetflag:false});
     }
   } else if (baseStyle === "stick"){
     viewer.setStyle({}, {stick:{radius:0.14, colorscheme:"cyanCarbon", opacity: dim ? 0.3 : 1}});
@@ -1057,6 +1240,7 @@ function show(key){
   if (active === key){ reset(); return; }
   const sel = selectors(DATA)[key];
   if (!sel || (sel.resi && !sel.resi.length)) return;
+  setView("structure");             // a highlight is only visible on the structure screen
   active = key;
   paintBase(true);
   emphasise(sel, key === "waters");
@@ -1065,6 +1249,7 @@ function show(key){
 }
 function showResidues(list, label){
   if (!viewer) return;
+  setView("structure");
   active = null;
   paintBase(true);
   emphasise({resi:list, chain:DATA.main}, false);
@@ -1083,11 +1268,37 @@ function syncCards(){
     c.classList.toggle("on", c.dataset.show === active));
 }
 
-/* ================================================================ the app */
+/* ================================================================ routing */
 
-async function load(id){
+let currentView = "structure";
+
+function setView(v){
+  if (!["structure","lab","paper"].includes(v)) v = "structure";
+  currentView = v;
+  document.querySelectorAll(".view").forEach(s =>
+    s.classList.toggle("on", s.id === "v" + v[0].toUpperCase() + v.slice(1)));
+  document.querySelectorAll(".view-btn").forEach(b =>
+    b.classList.toggle("on", b.dataset.view === v));
+  if (v === "structure" && viewer){
+    requestAnimationFrame(() => { viewer.resize(); viewer.render(); });
+  }
+  writeHash();
+}
+function writeHash(){
+  if (!DATA) return;
+  const h = "#" + DATA.id + (currentView === "structure" ? "" : "/" + currentView);
+  if (location.hash !== h) history.replaceState(null, "", h);
+}
+function readHash(){
+  const raw = (location.hash || "#1JNK").slice(1).split("/");
+  return {id: (raw[0] || "1JNK").toUpperCase(), view: raw[1] || "structure"};
+}
+
+/* ==================================================================== app */
+
+async function load(id, view){
   $("splash").classList.remove("gone");
-  $("splash").textContent = "loading " + id.toUpperCase() + " …";
+  $("splash").textContent = "loading " + String(id).toUpperCase() + " …";
   try {
     const {data, text} = await loadEntry(id);
 
@@ -1118,21 +1329,23 @@ async function load(id){
 
     renderPanels(data);
     drawSsTrack(data);
+    drawSequence(data);
     drawRamachandran(data);
     drawContactMap(data);
     drawDepth(data);
 
+    setView(view || currentView);
     paintBase(false);
+    viewer.resize();
     viewer.zoomTo();
     viewer.render();
     setStatus("Whole structure");
-    setLoad(data.id + " loaded · " + data.ca.length + " residues");
+    setLoad(data.id + " · " + data.ca.length + " residues");
     $("q").value = data.id;
-    history.replaceState(null, "", "#" + data.id);
     $("splash").classList.add("gone");
   } catch (err){
     $("splash").textContent = String(err.message || err);
-    setLoad("failed — " + (err.message || err));
+    setLoad("failed");
   }
 }
 
@@ -1140,6 +1353,8 @@ $("go").addEventListener("click", () => load($("q").value));
 $("q").addEventListener("keydown", e => { if (e.key === "Enter") load($("q").value); });
 document.querySelectorAll(".ex").forEach(e =>
   e.addEventListener("click", () => load(e.dataset.id)));
+document.querySelectorAll(".view-btn").forEach(b =>
+  b.addEventListener("click", () => setView(b.dataset.view)));
 
 document.querySelectorAll("[data-style]").forEach(b =>
   b.addEventListener("click", () => {
@@ -1159,12 +1374,24 @@ $("spinBtn").addEventListener("click", function(){
   this.classList.toggle("on", spinning);
 });
 $("resetBtn").addEventListener("click", reset);
-addEventListener("resize", () => { if (viewer) viewer.resize(); });
+$("copyRow").addEventListener("click", () => {
+  if (!DATA) return;
+  copyToClipboard(ROW_FIELDS.map(f => cleanCell(f[1](DATA))).join("\t"), $("copyNote"));
+});
+$("copyHead").addEventListener("click", () =>
+  copyToClipboard(ROW_FIELDS.map(f => f[0]).join("\t"), $("copyNote")));
+addEventListener("resize", () => { if (viewer && currentView === "structure") viewer.resize(); });
+addEventListener("hashchange", () => {
+  const {id, view} = readHash();
+  if (DATA && id === DATA.id) setView(view);
+  else load(id, view);
+});
 
 if (typeof $3Dmol === "undefined"){
-  $("splash").textContent = "3Dmol.js could not load — check the network";
+  $("splash").textContent = "3Dmol.js could not load — check the network connection.";
 } else {
-  load((location.hash || "#1JNK").slice(1));
+  const {id, view} = readHash();
+  load(id, view);
 }
 
 })();
