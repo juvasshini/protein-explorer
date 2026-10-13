@@ -39,6 +39,13 @@
   .view-btn:hover{color:var(--ink)}
   .view-btn.on{background:var(--accent);color:#04120c;font-weight:650}
   .topbar .spacer{flex:1}
+  .tagline{flex:none;padding:9px 16px;border-bottom:1px solid var(--line);
+           font-size:12px;color:var(--ink2);line-height:1.5;background:rgba(20,25,34,.45)}
+  .srcpick{display:flex;gap:4px;background:rgba(13,13,13,.6);padding:3px;border-radius:9px;
+           border:1px solid var(--line)}
+  .srcpick button{font:inherit;font-size:11px;color:var(--ink2);background:none;border:0;
+                  border-radius:6px;padding:5px 10px;cursor:pointer}
+  .srcpick button.on{background:var(--accent);color:#04120c;font-weight:650}
   .entry{display:flex;align-items:baseline;gap:10px;min-width:0}
   .entry .id{font-family:ui-monospace,Menlo,monospace;font-size:17px;font-weight:650;
              color:var(--accent)}
@@ -109,6 +116,22 @@
   .btn.on{color:#04120c;background:var(--accent);border-color:var(--accent);font-weight:650}
   .btn.go{background:var(--accent);color:#04120c;border-color:var(--accent);font-weight:650;
           padding:8px 14px}
+  .starters{display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+            margin-top:4px}
+  .starter{background:var(--raised);border:1px solid var(--line);border-radius:11px;
+           padding:13px 15px;cursor:pointer;transition:.14s;text-align:left}
+  .starter:hover{border-color:var(--accent);background:#232c3c}
+  .starter .who{font-family:ui-monospace,Menlo,monospace;font-size:13px;color:var(--accent);
+                font-weight:650}
+  .starter .blurb{font-size:11.5px;color:var(--ink2);line-height:1.55;margin-top:6px}
+  .starter .kind{font-size:9.5px;letter-spacing:.11em;text-transform:uppercase;
+                 color:var(--muted);margin-top:7px}
+  .vhint{font-size:11.5px;color:var(--muted);line-height:1.5;margin:0 0 14px}
+  .keylegend{flex:none;display:none;flex-wrap:wrap;gap:14px;padding:9px 14px;
+             border-top:1px solid var(--line);font-size:11px;color:var(--ink2)}
+  .keylegend.on{display:flex}
+  .keylegend i{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:6px;
+               vertical-align:-1px}
   .examples{display:flex;flex-wrap:wrap;gap:5px;margin-top:10px}
   .ex{font-size:10.5px;color:var(--muted);border:1px solid var(--line);border-radius:999px;
       padding:3px 9px;cursor:pointer;font-family:ui-monospace,Menlo,monospace}
@@ -193,21 +216,92 @@
 
 <div class="topbar">
   <span class="brand">Protein&nbsp;Explorer</span>
+  <div class="srcpick" id="srcPick">
+    <button class="on" data-src="pdb">PDB</button>
+    <button data-src="af">AlphaFold</button>
+  </div>
   <div class="search">
-    <input id="q" placeholder="PDB ID" maxlength="4" spellcheck="false">
+    <input id="q" placeholder="PDB ID" maxlength="10" spellcheck="false">
     <button class="btn go" id="go">Load</button>
   </div>
   <div class="views">
-    <button class="view-btn on" data-view="structure">Structure</button>
-    <button class="view-btn" data-view="lab">Lab</button>
-    <button class="view-btn" data-view="paper">Paper</button>
+    <button class="view-btn" data-view="find">Find a structure</button>
+    <button class="view-btn on" data-view="structure">Shape &amp; geometry</button>
+    <button class="view-btn" data-view="lab">Lab numbers</button>
+    <button class="view-btn" data-view="paper">Source &amp; citation</button>
   </div>
   <div class="spacer"></div>
   <div class="entry"><span class="id" id="barId"></span><span class="what" id="barWhat"></span></div>
   <span class="loadstate" id="loadState">ready</span>
 </div>
 
+<div class="tagline">Load any structure from the Protein Data Bank or AlphaFold Database and
+  explore its 3D shape, backbone geometry, residue contacts and flexibility, all computed in
+  your browser.</div>
+
 <main>
+
+  <section class="view" id="vFind">
+    <div class="reader">
+      <div class="panel">
+        <h2>Find a structure</h2>
+        <p class="vhint">Type a four-character PDB ID (1JNK) for an experimental structure, or
+          switch to AlphaFold and give a UniProt accession (P53779) for a predicted model.</p>
+        <div class="search" style="max-width:360px">
+          <input id="q2" placeholder="PDB ID or UniProt accession" maxlength="10" spellcheck="false">
+          <button class="btn go" id="go2">Load</button>
+        </div>
+      </div>
+
+      <div class="panel">
+        <h2>Start from one of these</h2>
+        <p class="vhint">Each loads straight into the viewer.</p>
+        <div class="starters">
+          <div class="starter" data-id="1JNK">
+            <div class="who">1JNK · JNK3 kinase</div>
+            <div class="blurb">A stress-activated kinase found mainly in the brain, linked to
+              neuronal death in Alzheimer's, Parkinson's and stroke. Its ATP pocket is almost
+              identical to JNK1 and JNK2, which makes selective drugs hard to design. I worked
+              with JNK3 during my research internship at NUS.</div>
+            <div class="kind">Experimental · X-ray</div>
+          </div>
+          <div class="starter" data-id="P53779" data-src="af">
+            <div class="who">P53779 · JNK3 (AlphaFold model)</div>
+            <div class="blurb">Compare this prediction with the experimental 1JNK structure.</div>
+            <div class="kind">Predicted · AlphaFold</div>
+          </div>
+          <div class="starter" data-id="1LYZ">
+            <div class="who">1LYZ · lysozyme</div>
+            <div class="blurb">An enzyme in tears, saliva and egg white that breaks down
+              bacterial cell walls. One of the first enzyme structures ever solved, and a
+              favourite test protein for crystallisation.</div>
+            <div class="kind">Experimental · X-ray</div>
+          </div>
+          <div class="starter" data-id="4HHB">
+            <div class="who">4HHB · haemoglobin</div>
+            <div class="blurb">Carries oxygen in red blood cells using four subunits that work
+              together. A single change in the β chain (glutamate 6 to valine) causes
+              sickle-cell disease.</div>
+            <div class="kind">Experimental · X-ray</div>
+          </div>
+          <div class="starter" data-id="1ATP">
+            <div class="who">1ATP · protein kinase A</div>
+            <div class="blurb">A classic model for how kinases hold ATP. Its fold is shared by
+              hundreds of human kinases, including JNK3, so try loading both and comparing
+              them.</div>
+            <div class="kind">Experimental · X-ray</div>
+          </div>
+          <div class="starter" data-id="6LU7">
+            <div class="who">6LU7 · SARS-CoV-2 main protease</div>
+            <div class="blurb">The enzyme that cuts the virus's proteins into working pieces,
+              solved in 2020 with an inhibitor bound. It's the target of the COVID-19 drug
+              Paxlovid.</div>
+            <div class="kind">Experimental · X-ray</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
 
   <section class="view on" id="vStructure">
     <div class="stage">
@@ -218,16 +312,33 @@
           <button class="btn" data-style="sphere">Spheres</button>
           <button class="btn" data-style="surface">Surface</button>
           <button class="btn" id="foldBtn">By fold</button>
+          <button class="btn" id="confBtn" style="display:none">By confidence</button>
           <button class="btn" id="spinBtn">Spin</button>
           <button class="btn" id="resetBtn">Reset</button>
         </div>
         <div id="viewer"></div>
         <div class="status"><span class="dot"></span><span id="statusText">Whole structure</span></div>
+        <div class="keylegend" id="foldKey">
+          <span><i style="background:#3987e5"></i>Helix</span>
+          <span><i style="background:#d95926"></i>Sheet</span>
+          <span><i style="background:#6a7384"></i>Loop or turn</span>
+        </div>
+        <div class="keylegend" id="confKey">
+          <span><i style="background:#0053D6"></i>Very high · pLDDT &gt; 90</span>
+          <span><i style="background:#65CBF3"></i>Confident · 70–90</span>
+          <span><i style="background:#FFDB13"></i>Low · 50–70</span>
+          <span><i style="background:#FF7D45"></i>Very low · &lt; 50</span>
+        </div>
       </div>
     </div>
 
     <div class="side">
       <div class="panel" id="foldPanel"></div>
+
+      <div class="panel">
+        <p class="vhint" style="margin:0">The shape itself — fold, backbone angles, which
+          residues touch, and which parts move.</p>
+      </div>
 
       <div class="panel">
         <h2>Ramachandran · φ against ψ</h2>
@@ -255,9 +366,9 @@
       </div>
 
       <div class="panel">
-        <h2>Mobility against depth</h2>
-        <p class="reads">B-factor against distance from the centre of mass. Buried residues
-          are pinned; surface ones move.</p>
+        <h2 id="depthTitle">Mobility against depth</h2>
+        <p class="reads" id="depthCaption">B-factor against distance from the centre of mass.
+          Buried residues are pinned; surface ones move.</p>
         <svg id="depth" viewBox="0 0 300 190" style="height:190px"></svg>
         <div class="stat" id="depthStat"></div>
       </div>
@@ -266,6 +377,9 @@
 
   <section class="view" id="vLab">
     <div class="wrap">
+      <p class="vhint" style="grid-column:1/-1;margin:0">The bench-relevant numbers: what is in
+        the file, what the protein weighs and how it behaves on a column, and how this crystal
+        was grown.</p>
       <div class="panel" style="grid-column:1/-1">
         <h2>Export</h2>
         <p class="reads">Every field on these pages as one tab-separated line, ready to
@@ -287,26 +401,24 @@
 
   <section class="view" id="vPaper">
     <div class="reader">
+      <p class="vhint" style="margin:0">Where this structure came from: who solved it, how, and
+        how the protein was made.</p>
       <div class="panel" id="paperPanel"></div>
       <div class="panel" id="provenancePanel"></div>
       <div class="panel">
-        <h2>Start from</h2>
-        <div class="examples">
-          <span class="ex" data-id="1JNK">1JNK · JNK3 kinase</span>
-          <span class="ex" data-id="1LYZ">1LYZ · lysozyme</span>
-          <span class="ex" data-id="4HHB">4HHB · haemoglobin</span>
-          <span class="ex" data-id="1ATP">1ATP · protein kinase A</span>
-          <span class="ex" data-id="6LU7">6LU7 · SARS-CoV-2 protease</span>
-        </div>
-        <footer style="margin-top:16px">
+        <footer>
           Structures from the <a href="https://www.rcsb.org" target="_blank">RCSB Protein Data
-          Bank</a> · viewer by <a href="https://3dmol.csb.pitt.edu" target="_blank">3Dmol.js</a> ·
-          every parameter on these pages is computed in your browser from the coordinate file.<br>
-          Built by Juvasshini Surresh Babu.
+          Bank</a> · predicted models from the
+          <a href="https://alphafold.ebi.ac.uk" target="_blank">AlphaFold Protein Structure
+          Database</a> (CC BY 4.0) · viewer by
+          <a href="https://3dmol.csb.pitt.edu" target="_blank">3Dmol.js</a> · every parameter is
+          computed in your browser from the coordinate file.<br><br>
+          Built by Juvasshini Surresh Babu ·
+          <a href="https://github.com/juvasshini/protein-explorer" target="_blank">GitHub</a> ·
+          <a href="https://www.linkedin.com/in/juvasshini-surresh-babu" target="_blank">LinkedIn</a>
         </footer>
       </div>
-    </div>
-  </section>
+    </section>
 
 </main>
 
@@ -338,6 +450,15 @@ const MAXASA = {ALA:129,ARG:274,ASN:195,ASP:193,CYS:167,GLN:225,GLU:223,GLY:104,
   HIS:224,ILE:197,LEU:201,LYS:236,MET:224,PHE:240,PRO:159,SER:155,THR:172,
   TRP:285,TYR:263,VAL:174};
 
+const AA1 = {};                       // one-letter -> three-letter, for mmCIF sequences
+for (const k in AA3) AA1[AA3[k]] = k;
+
+// colours for the two viewer colouring modes, matching the plots and the legends
+const FOLD_COLORS = {h:"#3987e5", e:"#d95926", c:"#6a7384"};
+function plddtColor(v){
+  return v > 90 ? "#0053D6" : v > 70 ? "#65CBF3" : v > 50 ? "#FFDB13" : "#FF7D45";
+}
+
 const SER_SET = new Set(["LYS","GLU","GLN"]);
 const SOLVENT = new Set(["HOH","WAT","DOD"]);
 // common crystallisation additives — present in the file but not the biology
@@ -349,7 +470,8 @@ const JUNK = new Set(["SO4","PO4","GOL","EDO","PEG","MPD","ACT","CL","NA","K",
 const $ = id => document.getElementById(id);
 const tip = $("tip");
 let viewer = null, MODEL = null, DATA = null;
-let baseStyle = "cartoon", active = null, spinning = false, byFold = false;
+let baseStyle = "cartoon", active = null, spinning = false, byFold = false,
+    byConfidence = false;
 
 function setStatus(t){ $("statusText").textContent = t; }
 function setLoad(t){ $("loadState").textContent = t; }
@@ -450,6 +572,132 @@ function parsePDB(text){
       organism: titleCase(field(source, "ORGANISM_SCIENTIFIC")),
       expression: titleCase(field(source, "EXPRESSION_SYSTEM")),
       vector: field(source, "EXPRESSION_SYSTEM_VECTOR_TYPE")
+    }
+  };
+}
+
+// Large entries are only published as mmCIF. This reads the parts we need and hands
+// back exactly what parsePDB does, so everything downstream is unchanged.
+function parseCIF(text){
+  const lines = text.split("\n");
+  const atoms = [], seqres = {}, item = {};
+  let nsym = 0, cryst = null;
+
+  const unquote = v => String(v).replace(/^['"]|['"]$/g, "").trim();
+
+  for (let i = 0; i < lines.length; i++){
+    const line = lines[i];
+
+    if (line.startsWith("_") && line.includes(" ")){
+      const k = line.slice(0, line.indexOf(" "));
+      const v = line.slice(line.indexOf(" ")).trim();
+      if (v) item[k] = unquote(v);
+      continue;
+    }
+    if (line.startsWith("_") && !line.includes(" ")){        // value is on the next lines
+      const k = line.trim();
+      let j = i + 1;
+      if ((lines[j] || "").startsWith(";")){
+        const buf = [lines[j].slice(1)];
+        while (++j < lines.length && !lines[j].startsWith(";")) buf.push(lines[j]);
+        item[k] = buf.join(" ").replace(/\s+/g, " ").trim();
+        i = j;
+      } else if (lines[j] != null && !lines[j].startsWith("_")){
+        item[k] = unquote(lines[j]);
+        i = j;
+      }
+      continue;
+    }
+
+    if (line.trim() !== "loop_") continue;
+
+    const cols = [];
+    let j = i + 1;
+    while (j < lines.length && lines[j].trim().startsWith("_")){ cols.push(lines[j].trim()); j++; }
+    const rows = [];
+    for (; j < lines.length; j++){
+      const row = lines[j].trim();
+      if (!row || row === "#" || row === "loop_" || row.startsWith("_")) break;
+      rows.push(row);
+    }
+    i = j - 1;
+    if (!cols.length) continue;
+    const head = cols[0];
+    const idx = {};
+    cols.forEach((c, k) => idx[c.slice(c.indexOf(".") + 1)] = k);
+
+    if (head.startsWith("_atom_site.")){
+      for (const row of rows){
+        const f = row.split(/\s+/);
+        if (f.length < cols.length) continue;
+        if (idx.pdbx_PDB_model_num != null && f[idx.pdbx_PDB_model_num] !== "1") continue;
+        const take = (a, b) => {
+          const v = idx[a] != null ? f[idx[a]] : (idx[b] != null ? f[idx[b]] : undefined);
+          return v === "?" || v === "." ? "" : v;
+        };
+        const resn = (take("auth_comp_id", "label_comp_id") || "").toUpperCase();
+        const resi = parseInt(take("auth_seq_id", "label_seq_id"), 10);
+        if (isNaN(resi)) continue;
+        atoms.push({
+          het: f[idx.group_PDB] === "HETATM",
+          serial: +take("id", "id"),
+          name: unquote(take("auth_atom_id", "label_atom_id")),
+          resn: resn,
+          chain: take("auth_asym_id", "label_asym_id") || "A",
+          resi: resi,
+          x: +f[idx.Cartn_x], y: +f[idx.Cartn_y], z: +f[idx.Cartn_z],
+          occ: parseFloat(take("occupancy")) || 1,
+          b: parseFloat(take("B_iso_or_equiv")) || 0,
+          el: (take("type_symbol") || "").toUpperCase(),
+          water: SOLVENT.has(resn)
+        });
+      }
+    }
+    else if (head.startsWith("_entity_poly.")){
+      for (const row of rows){
+        const f = row.split(/\s+/);
+        const seq = idx.pdbx_seq_one_letter_code_can != null ? f[idx.pdbx_seq_one_letter_code_can] : "";
+        const strands = idx.pdbx_strand_id != null ? f[idx.pdbx_strand_id] : "";
+        if (!seq || !strands) continue;
+        const three = unquote(seq).toUpperCase().split("").map(a => AA1[a]).filter(Boolean);
+        for (const ch of unquote(strands).split(",")) seqres[ch.trim()] = three;
+      }
+    }
+    else if (head.startsWith("_symmetry_equiv.") || head.startsWith("_space_group_symop.")){
+      nsym = rows.length;
+    }
+  }
+
+  // entity_poly can also arrive as plain items rather than a loop
+  if (!Object.keys(seqres).length && item["_entity_poly.pdbx_seq_one_letter_code_can"]){
+    const three = item["_entity_poly.pdbx_seq_one_letter_code_can"]
+      .replace(/\s+/g, "").toUpperCase().split("").map(a => AA1[a]).filter(Boolean);
+    for (const ch of (item["_entity_poly.pdbx_strand_id"] || "A").split(","))
+      seqres[ch.trim()] = three;
+  }
+
+  // rebuild a CRYST1 line so the crystal maths downstream needs no special case
+  const a = item["_cell.length_a"], b = item["_cell.length_b"], c = item["_cell.length_c"];
+  if (a && b && c){
+    const n = (v, w, d) => (parseFloat(v) || 0).toFixed(d).padStart(w);
+    const sg = item["_symmetry.space_group_name_H-M"] || item["_space_group.name_H-M_alt"] || "";
+    cryst = "CRYST1" + n(a,9,3) + n(b,9,3) + n(c,9,3) +
+            n(item["_cell.angle_alpha"],7,2) + n(item["_cell.angle_beta"],7,2) +
+            n(item["_cell.angle_gamma"],7,2) + " " + unquote(sg).padEnd(11);
+  }
+
+  return {
+    atoms, seqres, seqadv: [], remarks: {}, nsym: nsym || 1, cryst,
+    header: {
+      id: unquote(item["_entry.id"] || ""),
+      classification: titleCase(unquote(item["_struct_keywords.pdbx_keywords"] || "")),
+      deposited: unquote(item["_pdbx_database_status.recvd_initial_deposition_date"] || ""),
+      title: titleCase(unquote(item["_struct.title"] || "")),
+      molecule: titleCase(unquote(item["_entity.pdbx_description"] || "")),
+      fragment: "", ec: "",
+      organism: titleCase(unquote(item["_entity_src_gen.pdbx_gene_src_scientific_name"] || "")),
+      expression: titleCase(unquote(item["_entity_src_gen.pdbx_host_org_scientific_name"] || "")),
+      vector: ""
     }
   };
 }
@@ -682,13 +930,24 @@ async function getJSON(url){
 }
 
 async function loadEntry(id){
-  id = id.trim().toUpperCase();
-  if (!/^[0-9A-Z]{4}$/.test(id)) throw new Error("a PDB ID is four characters, like 1JNK");
+  const raw = String(id).trim();
+  id = raw.toUpperCase();
+  if (!/^[0-9A-Z]{4}$/.test(id))
+    throw new Error(`Couldn't load ${raw || "that"}. Check that it's a valid 4-character PDB ID.`);
 
+  // Big complexes are often deposited only as mmCIF, so fall back to that format.
   setLoad("fetching " + id + " …");
-  const res = await fetch(`https://files.rcsb.org/download/${id}.pdb`);
-  if (!res.ok) throw new Error(`no entry ${id} in the PDB (${res.status})`);
-  const text = await res.text();
+  let text = null, format = "pdb";
+  let res = await fetch(`https://files.rcsb.org/download/${id}.pdb`);
+  if (res.ok) text = await res.text();
+  else {
+    setLoad(id + " has no PDB-format file — trying mmCIF …");
+    res = await fetch(`https://files.rcsb.org/download/${id}.cif`);
+    if (!res.ok)
+      throw new Error(`Couldn't load ${id}. Check that it's a valid 4-character PDB ID.`);
+    text = await res.text();
+    format = "cif";
+  }
 
   // metadata is a bonus: if the API is unreachable the page still works
   let meta = {};
@@ -721,10 +980,63 @@ async function loadEntry(id){
   }
 
   setLoad("computing …");
-  const parsed = parsePDB(text);
+  const parsed = format === "cif" ? parseCIF(text) : parsePDB(text);
   parsed.header.id = parsed.header.id || id;
-  return {data: analyse(parsed, meta), text};
+  meta.format = format;
+  const data = analyse(parsed, meta);
+  data.isAlphaFold = false;
+  return {data, text, format};
 }
+
+/* Predicted models. The API is asked for the current file rather than guessing a
+   version number, because AlphaFold re-releases models. */
+async function loadAlphaFold(acc){
+  const raw = String(acc).trim();
+  acc = raw.toUpperCase();
+  if (!/^[A-Z0-9]{6,10}$/.test(acc))
+    throw new Error(`Couldn't load ${raw || "that"}. A UniProt accession looks like P53779.`);
+
+  setLoad("asking AlphaFold about " + acc + " …");
+  let info;
+  try {
+    info = await getJSON(`https://alphafold.ebi.ac.uk/api/prediction/${acc}`);
+  } catch (err){
+    throw new Error(`No AlphaFold model for ${acc}. Check the UniProt accession — ` +
+                    `it looks like P53779, not a PDB ID.`);
+  }
+  const rec = Array.isArray(info) ? info[0] : null;
+  if (!rec || !rec.pdbUrl)
+    throw new Error(`No AlphaFold model published for ${acc}.`);
+
+  setLoad("fetching the model …");
+  const res = await fetch(rec.pdbUrl);
+  if (!res.ok) throw new Error(`AlphaFold has a model for ${acc} but the file would not download.`);
+  const text = await res.text();
+
+  setLoad("computing …");
+  const parsed = parsePDB(text);
+  parsed.header.id = acc;
+  parsed.header.title = rec.uniprotDescription || acc;
+  parsed.header.organism = rec.organismScientificName || "";
+  const meta = {
+    isAlphaFold: true,
+    method: "AlphaFold prediction",
+    description: rec.uniprotDescription || rec.gene || acc,
+    organism: rec.organismScientificName,
+    title: rec.uniprotDescription,
+    uniprot: rec.uniprotAccession || acc,
+    entryId: rec.entryId,
+    version: rec.latestVersion,
+    released: rec.modelCreatedDate,
+    format: "pdb"
+  };
+  const data = analyse(parsed, meta);
+  data.isAlphaFold = true;
+  return {data, text, format: "pdb"};
+}
+
+const isAccession = v => /^[A-Z0-9]{6,10}$/i.test(String(v).trim()) &&
+                         !/^[0-9A-Z]{4}$/i.test(String(v).trim());
 
 /* ================================================================ panels */
 
@@ -798,8 +1110,22 @@ function renderPanels(d){
   const c = d.crystal || {};
   const recipe = [m.growMethod, m.pH != null ? "pH " + m.pH : "",
                   m.temp != null ? m.temp + " K" : "", m.growDetails].filter(Boolean).join(" · ");
-  $("crystalPanel").innerHTML =
-    `<h2>Crystallisation</h2>
+  $("crystalPanel").innerHTML = d.isAlphaFold
+    ? `<h2>Crystallisation</h2>
+       <p class="reads">This is a predicted model, so there is no crystal, no space group and
+         no diffraction data. The sequence-derived numbers below still apply, and are what you
+         would use if you wanted to express and crystallise this protein yourself.</p>
+       <div class="grid">` + [
+        card("Methionines", p.met,
+             p.met ? `1 per ${Math.round(p.n/p.met)} residues · SeMet ${Math.round(p.n/p.met) <= 100 ? "viable" : "marginal"}`
+                   : "SeMet phasing"),
+        card("Glycosylation", p.sequons, "N-X-S/T sequons · heterogeneity risk"),
+        card("Entropy patches", d.serSites.length, "click · Lys/Glu/Gln to mutate",
+             {show: d.serSites.length ? "ser" : null}),
+        card("Model version", d.meta.version != null ? "v" + d.meta.version : "—",
+             d.meta.entryId || "AlphaFold DB", {size:"sm"})
+      ].join("") + `</div>`
+    : `<h2>Crystallisation</h2>
      <p class="reads">The crystal this structure came from, and the recipe that grew it.</p>
      <div class="grid">` + [
       card("Space group", c.spacegroup || "—", `${c.nsym || "?"} symmetry operators`, {size:"sm"}),
@@ -1096,7 +1422,8 @@ function drawDepth(d){
     svg.appendChild(svgEl("circle", {cx:sx(p.d), cy:sy(p.b), r:2.4, class:"pt"}));
     const hit = svgEl("circle", {cx:sx(p.d), cy:sy(p.b), r:6, class:"hit"});
     hit.addEventListener("mousemove", e => showTip(e,
-      `<b>${p.resn} ${p.resi}</b> &nbsp;${p.d.toFixed(1)} Å out &nbsp;·&nbsp; B ${p.b.toFixed(1)} Å²`));
+      `<b>${p.resn} ${p.resi}</b> &nbsp;${p.d.toFixed(1)} Å out &nbsp;·&nbsp; ` +
+      (d.isAlphaFold ? `pLDDT ${p.b.toFixed(1)}` : `B ${p.b.toFixed(1)} Å²`)));
     hit.addEventListener("mouseleave", hideTip);
     hit.addEventListener("click", () => {
       hideTip(); showResidues([p.resi], `${p.resn} ${p.resi} · B ${p.b.toFixed(1)} Å²`);
@@ -1117,18 +1444,28 @@ function drawDepth(d){
   e.textContent = "distance from centre of mass"; svg.appendChild(e);
   e = svgEl("text", {x:9, y:(H-padb)/2, "text-anchor":"middle", class:"axis",
                      transform:`rotate(-90 9 ${(H-padb)/2})`});
-  e.textContent = "B (Å²)"; svg.appendChild(e);
+  e.textContent = d.isAlphaFold ? "pLDDT" : "B (Å²)"; svg.appendChild(e);
 
   const strength = Math.abs(r) > 0.5 ? "a clear trend"
                  : Math.abs(r) > 0.3 ? "a weak trend" : "no real trend";
   $("depthStat").innerHTML =
     `Pearson <b>r = ${r.toFixed(2)}</b> — ${strength}. Dashed line is the least-squares fit.`;
+  const tit = $("depthTitle");
+  if (tit) tit.textContent = d.isAlphaFold ? "Confidence against depth" : "Mobility against depth";
+  const cap = $("depthCaption");
+  if (cap) cap.textContent = d.isAlphaFold
+    ? "pLDDT, the model's own confidence, against distance from the centre of mass. "
+    + "Predicted structures are usually confident in the core and vague at the edges."
+    : "B-factor against distance from the centre of mass. Buried residues are pinned; "
+    + "surface ones move.";
 }
 
 /* ======================================================= spreadsheet row */
 
 const ROW_FIELDS = [
-  ["PDB code",            d => d.id],
+  ["Entry",               d => d.id],
+  ["Source database",     d => d.isAlphaFold ? "AlphaFold DB" : "RCSB PDB"],
+  ["Mean B-factor or pLDDT", d => d.proteinB],
   ["Title",               d => d.meta.description || d.header.title],
   ["Construct",           d => d.header.fragment || "full length"],
   ["Mutations",           d => d.meta.mutationCount != null ? d.meta.mutationCount : d.mutations.length],
@@ -1140,7 +1477,8 @@ const ROW_FIELDS = [
   ["Residues observed",   d => d.observed.length],
   ["Residues in construct", d => d.construct.length],
   ["Method",              d => d.meta.method || ""],
-  ["Resolution (A)",      d => d.meta.resolution != null ? d.meta.resolution.toFixed(2) : ""],
+  ["Resolution (A)",      d => d.isAlphaFold ? "n/a (predicted)"
+                                : (d.meta.resolution != null ? d.meta.resolution.toFixed(2) : "")],
   ["R-work",              d => d.meta.rwork != null ? d.meta.rwork.toFixed(3) : ""],
   ["R-free",              d => d.meta.rfree != null ? d.meta.rfree.toFixed(3) : ""],
   ["Space group",         d => d.crystal.spacegroup || ""],
@@ -1208,7 +1546,9 @@ function paintBase(dim){
   if (baseStyle === "cartoon" || baseStyle === "surface"){
     const cartoon = {opacity: dim ? 0.5 : 1};
     if (dim) cartoon.color = "#2b3440";
-    else if (byFold) cartoon.colorscheme = "ssPyMOL";
+    else if (byConfidence) cartoon.colorfunc = a => plddtColor(a.b);
+    else if (byFold) cartoon.colorfunc = a => FOLD_COLORS[a.ss === "s" ? "e" : (a.ss || "c")]
+                                              || FOLD_COLORS.c;
     else cartoon.color = "spectrum";
     viewer.setStyle({}, {cartoon});
     if (baseStyle === "surface"){
@@ -1273,7 +1613,7 @@ function syncCards(){
 let currentView = "structure";
 
 function setView(v){
-  if (!["structure","lab","paper"].includes(v)) v = "structure";
+  if (!["find","structure","lab","paper"].includes(v)) v = "structure";
   currentView = v;
   document.querySelectorAll(".view").forEach(s =>
     s.classList.toggle("on", s.id === "v" + v[0].toUpperCase() + v.slice(1)));
@@ -1294,13 +1634,33 @@ function readHash(){
   return {id: (raw[0] || "1JNK").toUpperCase(), view: raw[1] || "structure"};
 }
 
+/* Keep both search boxes and the PDB/AlphaFold picker agreeing with each other. */
+let source = "pdb";
+function setSource(src, quiet){
+  source = src === "af" ? "af" : "pdb";
+  document.querySelectorAll("#srcPick button").forEach(b =>
+    b.classList.toggle("on", b.dataset.src === source));
+  const hint = source === "af" ? "UniProt accession" : "PDB ID";
+  $("q").placeholder = hint;
+  $("q2").placeholder = source === "af" ? "UniProt accession, e.g. P53779"
+                                        : "PDB ID, e.g. 1JNK";
+  if (!quiet) $("q").focus();
+}
+
+function showLegends(){
+  $("foldKey").classList.toggle("on", byFold && !byConfidence);
+  $("confKey").classList.toggle("on", byConfidence);
+}
+
 /* ==================================================================== app */
 
 async function load(id, view){
   $("splash").classList.remove("gone");
   $("splash").textContent = "loading " + String(id).toUpperCase() + " …";
   try {
-    const {data, text} = await loadEntry(id);
+    const useAF = isAccession(id);
+    const {data, text} = useAF ? await loadAlphaFold(id) : await loadEntry(id);
+    setSource(useAF ? "af" : "pdb", true);
 
     const holder = $("viewer");
     if (!viewer){
@@ -1316,16 +1676,23 @@ async function load(id, view){
     MODEL = viewer.addModel(text, "pdb");
 
     // 3Dmol assigns secondary structure while parsing — reuse it
+    // 3Dmol writes sheets as "s"; the rest of this file calls them "e"
     const ssOf = {};
-    for (const a of MODEL.selectedAtoms({chain: data.main, atom: "CA"})) ssOf[a.resi] = a.ss;
+    for (const a of MODEL.selectedAtoms({chain: data.main, atom: "CA"}))
+      ssOf[a.resi] = a.ss === "s" ? "e" : (a.ss || "c");
     for (const r of data.ca) r.ss = ssOf[r.resi] || "c";
 
     DATA = data;
-    spinning = false; byFold = false; baseStyle = "cartoon"; active = null;
+    spinning = false; byFold = false; byConfidence = false;
+    baseStyle = "cartoon"; active = null;
     document.querySelectorAll("[data-style]").forEach(b =>
       b.classList.toggle("on", b.dataset.style === "cartoon"));
     $("spinBtn").classList.remove("on");
     $("foldBtn").classList.remove("on");
+    $("confBtn").classList.remove("on");
+    // confidence colouring only means something for a predicted model
+    $("confBtn").style.display = data.isAlphaFold ? "" : "none";
+    showLegends();
 
     renderPanels(data);
     drawSsTrack(data);
@@ -1340,17 +1707,28 @@ async function load(id, view){
     viewer.zoomTo();
     viewer.render();
     setStatus("Whole structure");
-    setLoad(data.id + " · " + data.ca.length + " residues");
+    setLoad(data.id + " · " + data.ca.length + " residues" +
+            (data.isAlphaFold ? " · predicted" : "") +
+            (data.meta.format === "cif" ? " · mmCIF" : ""));
     $("q").value = data.id;
+    $("q2").value = data.id;
     $("splash").classList.add("gone");
   } catch (err){
-    $("splash").textContent = String(err.message || err);
-    setLoad("failed");
+    const message = String(err.message || err);
+    $("splash").textContent = message;
+    setLoad(message);
+    setStatus(message);
   }
 }
 
 $("go").addEventListener("click", () => load($("q").value));
 $("q").addEventListener("keydown", e => { if (e.key === "Enter") load($("q").value); });
+$("go2").addEventListener("click", () => load($("q2").value));
+$("q2").addEventListener("keydown", e => { if (e.key === "Enter") load($("q2").value); });
+document.querySelectorAll("#srcPick button").forEach(b =>
+  b.addEventListener("click", () => setSource(b.dataset.src)));
+document.querySelectorAll(".starter").forEach(e =>
+  e.addEventListener("click", () => load(e.dataset.id)));
 document.querySelectorAll(".ex").forEach(e =>
   e.addEventListener("click", () => load(e.dataset.id)));
 document.querySelectorAll(".view-btn").forEach(b =>
@@ -1364,7 +1742,18 @@ document.querySelectorAll("[data-style]").forEach(b =>
     else { paintBase(false); viewer.render(); }
   }));
 $("foldBtn").addEventListener("click", function(){
-  byFold = !byFold; this.classList.toggle("on", byFold);
+  byFold = !byFold;
+  if (byFold){ byConfidence = false; $("confBtn").classList.remove("on"); }
+  this.classList.toggle("on", byFold);
+  showLegends();
+  if (active){ const k = active; active = null; show(k); }
+  else { paintBase(false); viewer.render(); }
+});
+$("confBtn").addEventListener("click", function(){
+  byConfidence = !byConfidence;
+  if (byConfidence){ byFold = false; $("foldBtn").classList.remove("on"); }
+  this.classList.toggle("on", byConfidence);
+  showLegends();
   if (active){ const k = active; active = null; show(k); }
   else { paintBase(false); viewer.render(); }
 });
@@ -1391,6 +1780,7 @@ if (typeof $3Dmol === "undefined"){
   $("splash").textContent = "3Dmol.js could not load — check the network connection.";
 } else {
   const {id, view} = readHash();
+  setSource(isAccession(id) ? "af" : "pdb", true);
   load(id, view);
 }
 
