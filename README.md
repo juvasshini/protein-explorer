@@ -1,11 +1,53 @@
-# protein-explorer
-Type a four-letter code, get a protein, with the numbers you'd actually want before touching it in the lab. 
+[README (2).md](https://github.com/user-attachments/files/33379708/README.2.md)
+# Protein Explorer<img width="1920" height="822" alt="screenshot" src="https://github.com/user-attachments/assets/9e8229a0-86a3-40e9-847e-957d8d535a58" />
 
-Hey, if you want an indepth explanation, be my guest!
-Every protein structure anyone has ever solved is sitting in a public database. 
 
-This turns that file into a page. Type a code : 1JNK, 1LYZ, whatever you're curious about and it fetches the structure, puts it on screen in 3D, and lays out the things you'd actually want: how heavy the protein is, what pH it'll stick to an anion exchange column at, how much of it the crystallographers couldn't see, what's wedged in the binding site and which residues are holding it there, and the exact recipe somebody used to grow the crystal in the first place.
+**[Open the live site →](https://juvasshini.github.io/protein-explorer/)**
 
-I built it because I spent seven months expressing, purifying and crystallising protein at a bench, and would've really liked to make it just a little easier for next time.
+Load any structure from the Protein Data Bank or AlphaFold Database and explore its 3D shape, backbone geometry, residue contacts and flexibility, all computed in your browser.
 
-**Runs entirely in your browser. Nothing to install.**
+![Protein Explorer](screenshot.png)
+
+## What it does
+
+- **3D viewer** — cartoon, sticks, spheres and surface styles, with colouring by secondary structure or, for predicted models, by prediction confidence. Drag to rotate, scroll to zoom, right-drag to pan.
+- **Ramachandran plot** — every residue by its backbone φ and ψ angles, coloured by fold state. Click a point to jump to that residue in the viewer.
+- **Contact map** — the Cα–Cα distance matrix. Hover for any residue pair and its separation; click to highlight both.
+- **Mobility against depth** — B-factor against distance from the centre of mass, with a least-squares fit and correlation coefficient. For AlphaFold models this becomes confidence against depth, since the B-factor column carries pLDDT.
+- **Sequence strip** — the resolved chain one letter per residue, coloured by fold, with gaps shown where the density ran out.
+- **Lab numbers** — molecular weight, theoretical pI, extinction coefficient and A280 conversion, GRAVY, plus crystallisation conditions, space group, Matthews coefficient and solvent content read from the deposition.
+- **Export** — every field as a tab-separated row, ready to paste into a comparison spreadsheet, with a matching header row.
+- **Guided starters** — six annotated structures to begin with, including a predicted model to compare against its experimental counterpart.
+- **AlphaFold support** — load by UniProt accession; the current model file is found through the AlphaFold API rather than hard-coded.
+
+Deep links work: `#1JNK` opens that structure, and `#1JNK/lab` opens it on a particular screen.
+
+## Built with
+
+HTML, CSS and JavaScript — no framework and no build step, so it runs as a single static file.
+
+- [3Dmol.js](https://3dmol.csb.pitt.edu) for the molecular viewer
+- [RCSB Protein Data Bank](https://www.rcsb.org) for experimental structures and entry metadata
+- [AlphaFold Protein Structure Database](https://alphafold.ebi.ac.uk) for predicted models (CC BY 4.0)
+
+Every parameter on the page is calculated in the browser from the coordinate file. Nothing is precomputed and there is no server.
+
+## Why I built it
+
+![DUDE I LOVE PROTEINS!](https://img.shields.io/badge/DUDE-I_LOVE_PROTEINS!-199e70?style=for-the-badge&labelColor=0d0d0d)
+
+That's the whole reason.
+
+## Running it locally
+
+Clone the repository and open `index.html` in a browser. There is nothing to install and nothing to build.
+
+```bash
+git clone https://github.com/juvasshini/protein-explorer.git
+cd protein-explorer
+open index.html
+```
+
+## Licence
+
+MIT — see [LICENSE](LICENSE). Structure data belongs to the RCSB PDB and the AlphaFold DB under their own terms.
