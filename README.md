@@ -11,15 +11,15 @@ Load any structure from the Protein Data Bank or AlphaFold Database and explore 
 
 ## What it does
 
-- **3D viewer** — cartoon, sticks, spheres and surface styles, with colouring by secondary structure or, for predicted models, by prediction confidence. Drag to rotate, scroll to zoom, right-drag to pan.
-- **Ramachandran plot** — every residue by its backbone φ and ψ angles, coloured by fold state. Click a point to jump to that residue in the viewer.
-- **Contact map** — the Cα–Cα distance matrix. Hover for any residue pair and its separation; click to highlight both.
-- **Mobility against depth** — B-factor against distance from the centre of mass, with a least-squares fit and correlation coefficient. For AlphaFold models this becomes confidence against depth, since the B-factor column carries pLDDT.
-- **Sequence strip** — the resolved chain one letter per residue, coloured by fold, with gaps shown where the density ran out.
-- **Lab numbers** — molecular weight, theoretical pI, extinction coefficient and A280 conversion, GRAVY, plus crystallisation conditions, space group, Matthews coefficient and solvent content read from the deposition.
-- **Export** — every field as a tab-separated row, ready to paste into a comparison spreadsheet, with a matching header row.
-- **Guided starters** — six annotated structures to begin with, including a predicted model to compare against its experimental counterpart.
-- **AlphaFold support** — load by UniProt accession; the current model file is found through the AlphaFold API rather than hard-coded.
+- **3D viewer** : cartoon, sticks, spheres and surface styles, with colouring by secondary structure or, for predicted models, by prediction confidence. Drag to rotate, scroll to zoom, right-drag to pan.
+- **Ramachandran plot** : every residue by its backbone φ and ψ angles, coloured by fold state. Click a point to jump to that residue in the viewer.
+- **Contact map** : the Cα–Cα distance matrix. Hover for any residue pair and its separation; click to highlight both.
+- **Mobility against depth** : B-factor against distance from the centre of mass, with a least-squares fit and correlation coefficient. For AlphaFold models this becomes confidence against depth, since the B-factor column carries pLDDT.
+- **Sequence strip** : the resolved chain one letter per residue, coloured by fold, with gaps shown where the density ran out.
+- **Lab numbers** : molecular weight, theoretical pI, extinction coefficient and A280 conversion, GRAVY, plus crystallisation conditions, space group, Matthews coefficient and solvent content read from the deposition.
+- **Export** : every field as a tab-separated row, ready to paste into a comparison spreadsheet, with a matching header row.
+- **Guided starters** : six annotated structures to begin with, including a predicted model to compare against its experimental counterpart.
+- **AlphaFold support** : load by UniProt accession, the current model file is found through the AlphaFold API rather than hard-coded.
 
 Deep links work: `#1JNK` opens that structure, and `#1JNK/lab` opens it on a particular screen.
 
