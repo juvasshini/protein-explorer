@@ -1,12 +1,13 @@
-[README (2).md](https://github.com/user-attachments/files/33379708/README.2.md)
-# Protein Explorer<img width="1920" height="822" alt="screenshot" src="https://github.com/user-attachments/assets/9e8229a0-86a3-40e9-847e-957d8d535a58" />
-
+[README (3).md](https://github.com/user-attachments/files/33379985/README.3.md)
+# Protein Explorer
 
 **[Open the live site →](https://juvasshini.github.io/protein-explorer/)**
 
 Load any structure from the Protein Data Bank or AlphaFold Database and explore its 3D shape, backbone geometry, residue contacts and flexibility, all computed in your browser.
 
 ![Protein Explorer](screenshot.png)
+<img width="1920" height="822" alt="screenshot (1)" src="https://github.com/user-attachments/assets/9e236362-d2c7-42a2-865c-0d86e0526e07" />
+
 
 ## What it does
 
@@ -33,10 +34,9 @@ HTML, CSS and JavaScript — no framework and no build step, so it runs as a sin
 Every parameter on the page is calculated in the browser from the coordinate file. Nothing is precomputed and there is no server.
 
 ## Why I built it
+<img width="1000" height="283" alt="banner" src="https://github.com/user-attachments/assets/9b9be73a-35eb-473c-89ff-da4cdbdad3ca" />
 
-![DUDE I LOVE PROTEINS!](https://img.shields.io/badge/DUDE-I_LOVE_PROTEINS!-199e70?style=for-the-badge&labelColor=0d0d0d)
-
-That's the whole reason.
+![DUDE I LOVE PROTEINS!](banner.gif)
 
 ## Running it locally
 
