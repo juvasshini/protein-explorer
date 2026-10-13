@@ -1544,8 +1544,8 @@ function paintBase(dim){
   viewer.removeAllSurfaces();
   viewer.setStyle({}, {});
   if (baseStyle === "cartoon" || baseStyle === "surface"){
-    const cartoon = {opacity: dim ? 0.5 : 1};
-    if (dim) cartoon.color = "#2b3440";
+    const cartoon = {opacity: dim ? 0.65 : 1};
+    if (dim) cartoon.color = "#4c5a6e";          // still readable as context
     else if (byConfidence) cartoon.colorfunc = a => plddtColor(a.b);
     else if (byFold) cartoon.colorfunc = a => FOLD_COLORS[a.ss === "s" ? "e" : (a.ss || "c")]
                                               || FOLD_COLORS.c;
@@ -1555,9 +1555,9 @@ function paintBase(dim){
       viewer.addSurface($3Dmol.SurfaceType.VDW, {opacity:0.55, color:"#2f6b8f"}, {hetflag:false});
     }
   } else if (baseStyle === "stick"){
-    viewer.setStyle({}, {stick:{radius:0.14, colorscheme:"cyanCarbon", opacity: dim ? 0.3 : 1}});
+    viewer.setStyle({}, {stick:{radius:0.14, colorscheme:"cyanCarbon", opacity: dim ? 0.45 : 1}});
   } else {
-    viewer.setStyle({}, {sphere:{scale:0.28, colorscheme:"cyanCarbon", opacity: dim ? 0.3 : 1}});
+    viewer.setStyle({}, {sphere:{scale:0.28, colorscheme:"cyanCarbon", opacity: dim ? 0.45 : 1}});
   }
   viewer.setStyle({resn:[...SOLVENT]}, {});
   if (DATA.ligNames.length){
@@ -1727,6 +1727,15 @@ $("go2").addEventListener("click", () => load($("q2").value));
 $("q2").addEventListener("keydown", e => { if (e.key === "Enter") load($("q2").value); });
 document.querySelectorAll("#srcPick button").forEach(b =>
   b.addEventListener("click", () => setSource(b.dataset.src)));
+
+// the toggle is a label for what you have typed, so keep it honest as you type
+function reflectSource(value){
+  const v = String(value).trim().toUpperCase();
+  if (/^[0-9A-Z]{4}$/.test(v)) setSource("pdb", true);
+  else if (/^[A-Z0-9]{6,10}$/.test(v)) setSource("af", true);
+}
+$("q").addEventListener("input", e => reflectSource(e.target.value));
+$("q2").addEventListener("input", e => reflectSource(e.target.value));
 document.querySelectorAll(".starter").forEach(e =>
   e.addEventListener("click", () => load(e.dataset.id)));
 document.querySelectorAll(".ex").forEach(e =>
